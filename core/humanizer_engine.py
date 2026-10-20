@@ -156,6 +156,150 @@ def get_humanizer_client(custom_api_key: Optional[str] = None):
         return None
 
 
+def markdown_to_clean_text(md: str) -> str:
+    """
+    Loại bỏ triệt để các ký tự markdown (#, **, *, ---, `) để trả về văn bản sạch 100%.
+    Người dùng chỉ việc copy về dán thẳng vào ứng dụng không hỗ trợ markdown.
+    """
+    if not md:
+        return ""
+    lines = md.split("\n")
+    cleaned_lines = []
+    for line in lines:
+        stripped = line.strip()
+        if stripped in ["---", "***", "___"]:
+            cleaned_lines.append("")
+            continue
+        # Bỏ dấu # ở đầu dòng
+        line = re.sub(r"^#{1,6}\s*", "", line)
+        # Bỏ in đậm **...** và __...__
+        line = re.sub(r"\*\*(.*?)\*\*", r"\1", line)
+        line = re.sub(r"__(.*?)__", r"\1", line)
+        # Bỏ in nghiêng *...*
+        line = re.sub(r"(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)", r"\1", line)
+        # Bỏ dấu trích dẫn >
+        line = re.sub(r"^>\s*", "", line)
+        # Bỏ inline code `
+        line = re.sub(r"`(.*?)`", r"\1", line)
+        cleaned_lines.append(line)
+    return "\n".join(cleaned_lines).strip()
+
+
+def markdown_to_rich_html(md: str) -> str:
+    """
+    Chuyển đổi Markdown sang Semantic HTML chuẩn (kèm inline style tối ưu cho Word & Google Docs & CMS).
+    Hỗ trợ H1, H2, H3, in đậm, danh sách gạch đầu dòng, meta description box.
+    """
+    if not md:
+        return ""
+    
+    html_lines = []
+    in_ul = False
+    in_ol = False
+    
+    def close_lists():
+        nonlocal in_ul, in_ol
+        res = []
+        if in_ul:
+            res.append("</ul>")
+            in_ul = False
+        if in_ol:
+            res.append("</ol>")
+            in_ol = False
+        return res
+
+    for raw_line in md.split("\n"):
+        line = raw_line.rstrip()
+        stripped = line.strip()
+        
+        if not stripped:
+            html_lines.extend(close_lists())
+            continue
+
+        # Đường kẻ ngang
+        if stripped in ["---", "***", "___"]:
+            html_lines.extend(close_lists())
+            html_lines.append("<hr style='border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;'/>")
+            continue
+
+        # Thẻ H1
+        if stripped.startswith("# "):
+            html_lines.extend(close_lists())
+            content = stripped[2:].strip()
+            content = re.sub(r"\*\*(.*?)\*\*", r"\1", content)
+            html_lines.append(f"<h1 style='font-size: 24px; font-weight: 800; color: #0f172a; margin-top: 16px; margin-bottom: 12px; line-height: 1.3;'>{content}</h1>")
+            continue
+
+        # Thẻ H2
+        if stripped.startswith("## "):
+            html_lines.extend(close_lists())
+            content = stripped[3:].strip()
+            content = re.sub(r"\*\*(.*?)\*\*", r"\1", content)
+            html_lines.append(f"<h2 style='font-size: 19px; font-weight: 700; color: #1e293b; margin-top: 24px; margin-bottom: 10px; line-height: 1.35;'>{content}</h2>")
+            continue
+
+        # Thẻ H3
+        if stripped.startswith("### "):
+            html_lines.extend(close_lists())
+            content = stripped[4:].strip()
+            content = re.sub(r"\*\*(.*?)\*\*", r"\1", content)
+            html_lines.append(f"<h3 style='font-size: 16px; font-weight: 600; color: #334155; margin-top: 18px; margin-bottom: 8px;'>{content}</h3>")
+            continue
+
+        # Thẻ H4
+        if stripped.startswith("#### "):
+            html_lines.extend(close_lists())
+            content = stripped[5:].strip()
+            content = re.sub(r"\*\*(.*?)\*\*", r"\1", content)
+            html_lines.append(f"<h4 style='font-size: 15px; font-weight: 600; color: #475569; margin-top: 14px; margin-bottom: 6px;'>{content}</h4>")
+            continue
+
+        # Meta Description Callout Box
+        if stripped.lower().startswith("**meta description:**") or stripped.lower().startswith("meta description:"):
+            html_lines.extend(close_lists())
+            desc_body = re.sub(r"^\*{0,2}Meta Description:\*{0,2}\s*", "", stripped, flags=re.IGNORECASE)
+            desc_body = re.sub(r"\*\*(.*?)\*\*", r"<strong>\1</strong>", desc_body)
+            html_lines.append(f"<div style='background-color: #f0fdf4; border-left: 4px solid #16a34a; padding: 12px 16px; border-radius: 6px; margin: 16px 0; color: #166534; font-size: 14px;'><strong>Meta Description Chuẩn SEO:</strong> {desc_body}</div>")
+            continue
+
+        # Danh sách gạch đầu dòng (- hoặc *)
+        if re.match(r"^[-*]\s+", stripped):
+            if in_ol:
+                html_lines.extend(close_lists())
+            if not in_ul:
+                html_lines.append("<ul style='padding-left: 20px; margin: 10px 0;'>")
+                in_ul = True
+            item_text = re.sub(r"^[-*]\s+", "", stripped)
+            item_text = re.sub(r"\*\*(.*?)\*\*", r"<strong>\1</strong>", item_text)
+            item_text = re.sub(r"(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)", r"<em>\1</em>", item_text)
+            html_lines.append(f"<li style='margin-bottom: 6px; color: #334155; line-height: 1.6;'>{item_text}</li>")
+            continue
+
+        # Danh sách số (1., 2...)
+        num_match = re.match(r"^(\d+)\.\s+(.*)", stripped)
+        if num_match:
+            if in_ul:
+                html_lines.extend(close_lists())
+            if not in_ol:
+                html_lines.append("<ol style='padding-left: 20px; margin: 10px 0;'>")
+                in_ol = True
+            item_text = num_match.group(2)
+            item_text = re.sub(r"\*\*(.*?)\*\*", r"<strong>\1</strong>", item_text)
+            item_text = re.sub(r"(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)", r"<em>\1</em>", item_text)
+            html_lines.append(f"<li style='margin-bottom: 6px; color: #334155; line-height: 1.6;'>{item_text}</li>")
+            continue
+
+        # Đoạn văn thông thường
+        html_lines.extend(close_lists())
+        para_text = stripped
+        para_text = re.sub(r"\*\*(.*?)\*\*", r"<strong>\1</strong>", para_text)
+        para_text = re.sub(r"(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)", r"<em>\1</em>", para_text)
+        html_lines.append(f"<p style='margin-bottom: 12px; color: #334155; line-height: 1.7; font-size: 15px;'>{para_text}</p>")
+
+    html_lines.extend(close_lists())
+    return "\n".join(html_lines)
+
+
 def generate_humanized_content(
     text: str,
     mode: str = "social_mkt",
@@ -180,31 +324,78 @@ def generate_humanized_content(
             "error": "Chưa có Gemini API Key. Vui lòng nhập API Key để kích hoạt bộ não AI."
         }
 
-    # Định nghĩa cấu hình chỉ đạo cho từng Chế độ
+    # Định nghĩa cấu hình chỉ đạo chuyên sâu cho từng Chế độ
     mode_instructions = {
-        "academic": """
-MỤC TIÊU: Chuẩn hóa bài viết học thuật / luận văn / tiểu luận nghiên cứu.
-QUY TẮC CỐT LÕI:
-1. KHÔNG tự bịa nguồn trích dẫn hoặc số liệu ảo (chống Hallucination).
-2. XÓA BỎ các sáo ngữ rập khuôn: "không thể phủ nhận rằng", "bước đệm vững chắc", "như một tất yếu".
-3. Dùng câu văn học thuật tiếng Việt chuẩn mực, mạch lạc, có tính phản biện logic sắc bén.
-4. Diễn đạt có chiều sâu chuyên ngành, lập luận chặt chẽ thay vì liệt kê gạch đầu dòng hời hợt.
+        "blog_seo": """
+MỤC TIÊU: Chuẩn hóa bài viết Blog / Website chuẩn Google E-E-A-T (Trải nghiệm - Chuyên môn - Đáng tin cậy) và tối ưu SEO Onpage hàng đầu.
+
+QUY TẮC BỐ CỤC BÀI VIẾT BLOG WEBSITE CHUẨN SEO BẮT BUỘC:
+1. TIÊU ĐỀ BÀI VIẾT (THẺ H1):
+   - Đặt ở dòng đầu tiên, bắt đầu bằng '# [Tiêu đề bài viết H1]'.
+   - Độ dài: 55-65 ký tự, hấp dẫn, chứa từ khóa chính ngay đầu, kích thích tỷ lệ click (CTR).
+   - Chỉ có DUY NHẤT 1 thẻ H1 trong toàn bộ bài viết.
+2. THẺ META DESCRIPTION:
+   - Dòng tiếp theo: '**Meta Description:** [Đoạn tóm tắt 150-160 ký tự cuốn hút, chứa từ khóa chính/phụ và lời kêu gọi hành động]'.
+3. ĐOẠN SAPO / MỞ BÀI (SEARCH INTENT HOOK):
+   - 2-3 câu ngắn, trả lời ngay thắc mắc cốt lõi của người tìm kiếm (Search Intent), nêu rõ vấn đề thực tế và giải pháp bài viết cung cấp.
+4. CÁC ĐỀ MỤC THÂN BÀI (THẺ H2 VÀ H3 PHÂN CẤP CHUẨN):
+   - Sử dụng '## [Tiêu đề mục lớn H2]' cho các luận điểm chính (Đặc điểm, Bảng thông số, Hướng dẫn thi công, Tiêu chuẩn kỹ thuật, Báo giá...).
+   - Sử dụng '### [Tiêu đề mục nhỏ H3]' cho các chi tiết kỹ thuật hoặc giải pháp cụ thể bên trong H2.
+   - Các đoạn văn ngắn từ 2-4 câu để người đọc dễ theo dõi, thoáng mắt.
+   - Sử dụng danh sách gạch đầu dòng '- ' cho các ưu điểm, tính năng, lưu ý.
+   - In đậm '**từ khóa quan trọng**' và các thông số kỹ thuật cốt lõi một cách tự nhiên.
+5. GÓC NHÌN CHUYÊN GIA / KINH NGHIỆM THỰC CHIẾN (E-E-A-T):
+   - Thêm phần kinh nghiệm thực tế, các lỗi hay gặp khi thi công/sử dụng và cách phòng tránh để bài viết có giá trị vượt trội so với bài AI thông thường.
+6. KẾT LUẬN & KÊU GỌI HÀNH ĐỘNG (CTA):
+   - Đề mục H2: '## Kết Luận & Tư Vấn Báo Giá' tóm tắt giá trị và kêu gọi độc giả liên hệ.
+7. CÂU HỎI THƯỜNG GẶP (FAQ CHUẨN SEO SCHEMA):
+   - Đề mục H2: '## Câu Hỏi Thường Gặp Về [Chủ Đề]' kèm 2-3 câu hỏi dạng H3 và câu trả lời súc tích.
 """,
         "social_mkt": """
-MỤC TIÊU: Chuẩn hóa bài viết Content Marketing / Facebook / Threads / Mạng xã hội.
-QUY TẮC CỐT LÕI:
-1. 2 CÂU ĐẦU TIÊN CỰC KỲ QUAN TRỌNG: Tạo Hook mạnh mẽ, đâm trúng nỗi đau (pain point) hoặc sự tò mò. Tuyệt đối không mở đầu bằng: "Trong kỷ nguyên số...", "Bạn có biết...", "Hôm nay mình chia sẻ...".
-2. NHỊP ĐIỆU CÂU BẬT NHẢ (BURSTINESS): Xen kẽ câu cực ngắn và câu vừa phải. Đọc lên phải có nhạc tính và nhịp thở của người nói chuyện thật.
-3. TIẾNG VIỆT ĐỜI THƯỜNG: Dùng từ ngữ tự nhiên, gần gũi, dí dỏm hoặc sâu sắc. Cắt tỉa bớt các icon emoji thừa thãi đầu mỗi dòng.
-4. TẬP TRUNG VÀO INSIGHT NGẦM: Nói điều khách hàng cảm thấy nhưng chưa bao giờ tự diễn đạt thành lời.
+MỤC TIÊU: Chuẩn hóa bài viết Content Marketing / Facebook / Threads / Mạng xã hội chuyên nghiệp.
+
+QUY TẮC ĐỊNH DẠNG MẠNG XÃ HỘI:
+- TUYỆT ĐỐI KHÔNG dùng dấu thăng '# ' hay '## ' làm tiêu đề (vì trên Facebook/Threads/TikTok dấu # sẽ biến thành hashtag rác làm hỏng bài viết).
+- Tiêu đề chính và các đề mục phụ viết HOA TOÀN BỘ hoặc in đậm '**...**' nổi bật.
+
+BỐ CỤC CHUẨN MARKETING VIRAL & CHUYỂN ĐỔI:
+1. HEADLINE HOOK (1-2 DÒNG ĐẦU TIÊN):
+   - Viết HOA toàn bộ, có emoji đắt giá ở đầu (ví dụ: 🔥, ❌, ⚠️, 💡).
+   - Đâm trúng nỗi đau (Pain Point), sự tò mò hoặc cảnh báo sai lầm tốn tiền để độc giả bấm "Xem thêm...".
+   - Tuyệt đối không mở bài rập khuôn sáo rỗng: "Trong kỷ nguyên số...", "Hôm nay mình xin chia sẻ...".
+2. CẦU NỐI ĐỒNG CẢM & KHƠI GỢI VẤN ĐỀ (AGITATION):
+   - 2-3 câu ngắn ngắt dòng thoáng đãng, đánh trúng tâm lý bực mình hoặc mong muốn của khách hàng.
+   - Nhịp điệu câu bật nhả tự nhiên, đọc lên có cảm xúc của người nói chuyện thật.
+3. GIẢI PHÁP & LỢI ÍCH CỐT LÕI (CORE VALUE):
+   - Trình bày dạng gạch đầu dòng kèm emoji tinh tế đầu dòng (ví dụ: 👉, ✔️, ⚡).
+   - Nêu rõ lợi ích khách hàng nhận được (tiết kiệm chi phí, bền đẹp, thẩm mỹ cao), không chỉ liệt kê thông số khô khan.
+4. LỜI KÊU GỌI HÀNH ĐỘNG DỨT KHOÁT (CALL TO ACTION - CTA):
+   - 1 câu CTA rõ ràng: "Nhắn tin cho xưởng để nhận bảng giá sỉ", "Để lại bình luận...", "Gọi ngay hotline...".
+5. THÔNG TIN LIÊN HỆ & BỘ HASHTAG NGÀNH:
+   - Thông tin xưởng/hotline/website gọn gàng.
+   - 3-5 hashtag thương hiệu và ngành hàng ở dòng cuối cùng (ví dụ: #NoiThatGiaXuong #VitInox304).
 """,
-        "blog_seo": """
-MỤC TIÊU: Chuẩn hóa bài viết Blog Website chuẩn Google E-E-A-T (Trải nghiệm - Chuyên môn - Đáng tin cậy).
-QUY TẮC CỐT LÕI:
-1. VÀO THẲNG SEARCH INTENT: Mở bài trả lời ngay thắc mắc chính của người tìm kiếm trong 3-4 câu đầu, không dài dòng triết lý.
-2. THÊM YẾU TỐ TRẢI NGHIỆM THẬT (FIRSTHAND EXPERIENCE): Đưa vào các mẹo thực tế, các lỗi hay gặp (troubleshooting), góc nhìn chuyên gia thực chiến.
-3. CẤU TRÚC TỰ NHIÊN: Tiêu đề H2, H3 hấp dẫn, không rập khuôn kiểu từ điển/sách giáo khoa.
-4. XÓA BỎ NỘI DUNG RỖNG (FLUFF CONTENT): Mọi đoạn văn đều phải mang lại giá trị thông tin thực tế.
+        "academic": """
+MỤC TIÊU: Chuẩn hóa bài viết Học thuật / Luận văn / Tiểu luận nghiên cứu khoa học chuẩn mực.
+
+QUY TẮC ĐỊNH DẠNG HỌC THUẬT:
+- Dùng hệ thống số đề mục chuẩn khoa học: 1. -> 1.1. -> 1.1.1. -> 2. -> 2.1...
+- Các đề mục in đậm '**1. TÊN ĐỀ MỤC**', TUYỆT ĐỐI KHÔNG dùng dấu thăng '# ' và KHÔNG dùng emoji.
+- Không tự bịa nguồn trích dẫn hoặc số liệu ảo (chống Hallucination).
+
+BỐ CỤC CHUẨN LUẬN VĂN KHOA HỌC:
+1. TIÊU ĐỀ ĐỀ TÀI NGHIÊN CỨU:
+   - Viết hoa toàn bộ, trang trọng, cô đọng, thể hiện chính xác đối tượng và phạm vi nghiên cứu.
+2. 1. ĐẶT VẤN ĐỀ VÀ TÍNH CẤP THIẾT CỦA ĐỀ TÀI:
+   - Bối cảnh nghiên cứu, khoảng trống tri thức, mục tiêu và ý nghĩa thực tiễn của đề tài.
+3. 2. CƠ SỞ LÝ LUẬN VÀ TỔNG QUAN TÀI LIỆU NGHIÊN CỨU:
+   - Hệ thống hóa các khái niệm nền tảng, cơ sở lý thuyết và các nghiên cứu tiêu biểu đi trước.
+4. 3. NỘI DUNG VÀ PHƯƠNG PHÁP NGHIÊN CỨU (PHÂN TÍCH THỰC TRẠNG):
+   - Đánh số mục phân cấp 3.1, 3.2 khoa học; phân tích logic chặt chẽ, luận cứ xác đáng, có tính phản biện.
+5. 4. ĐÁNH GIÁ VÀ THẢO LUẬN KẾT QUẢ:
+   - Đánh giá những ưu điểm, hạn chế và nguyên nhân cốt lõi.
+6. 5. KẾT LUẬN VÀ HỆ THỐNG GIẢI PHÁP / ĐỀ XUẤT KHUYẾN NGHỊ:
+   - Đưa ra các khuyến nghị khả thi, gắn liền với thực tiễn và định hướng phát triển tiếp theo.
 """
     }
 
@@ -271,10 +462,16 @@ Không thêm lời giải thích mào đầu (như "Dưới đây là bài viế
     audit_before = audit_vietnamese_ai_text(text)
     audit_after = audit_vietnamese_ai_text(humanized_text)
     
+    # Chuyển đổi sang phiên bản văn bản sạch (đã gọt sạch #, **) và HTML định dạng chuẩn
+    clean_text = markdown_to_clean_text(humanized_text)
+    humanized_html = markdown_to_rich_html(humanized_text)
+    
     return {
         "success": True,
         "original_text": text,
         "humanized_text": humanized_text,
+        "clean_text": clean_text,
+        "humanized_html": humanized_html,
         "audit_before": audit_before,
         "audit_after": audit_after,
         "mode": mode,

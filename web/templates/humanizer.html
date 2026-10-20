@@ -186,6 +186,8 @@
     <div class="flex items-center space-x-2">
       <div class="hidden sm:flex items-center space-x-1.5 mr-2">
         <span class="text-slate-400">Mẫu thử:</span>
+        <button onclick="loadSample('seo')" class="px-2 py-0.5 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100 text-xs">Blog SEO</button>
+        <span class="text-slate-300">•</span>
         <button onclick="loadSample('social')" class="px-2 py-0.5 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100 text-xs">Marketing</button>
         <span class="text-slate-300">•</span>
         <button onclick="loadSample('academic')" class="px-2 py-0.5 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100 text-xs">Luận văn</button>
@@ -253,26 +255,87 @@
           <span class="font-semibold text-slate-700 uppercase tracking-wider text-[11px]">Bản chuẩn hóa tự nhiên</span>
           <span class="text-slate-300">|</span>
           <span id="output-word-count">0 từ</span>
+          
+          <!-- VIEW TOGGLE TABS (RICH TEXT vs RAW MARKDOWN) -->
+          <div id="output-view-tabs" class="hidden sm:inline-flex items-center ml-3 p-0.5 bg-slate-200/70 rounded-lg text-[11px] font-medium">
+            <button onclick="switchOutputView('rich')" id="tab-view-rich" class="px-2 py-0.5 rounded-md bg-white text-slate-900 shadow-xs transition-all flex items-center space-x-1">
+              <svg class="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              <span>Định dạng trực quan</span>
+            </button>
+            <button onclick="switchOutputView('raw')" id="tab-view-raw" class="px-2 py-0.5 rounded-md text-slate-600 hover:text-slate-900 transition-all flex items-center space-x-1">
+              <svg class="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+              </svg>
+              <span>Mã nguồn</span>
+            </button>
+          </div>
         </div>
-        <div class="flex items-center space-x-3">
-          <button onclick="copyOutput()" id="btn-copy" class="hover:text-slate-900 font-medium text-[11px] inline-flex items-center space-x-1">
-            <svg class="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-            </svg>
-            <span id="copy-btn-text">Sao chép</span>
-          </button>
+
+        <div class="flex items-center space-x-2">
+          <!-- SMART COPY DROPDOWN / BUTTON -->
+          <div class="relative inline-block text-left" id="copy-dropdown-container">
+            <div class="inline-flex rounded-lg shadow-xs border border-slate-200 bg-white hover:border-slate-300">
+              <button onclick="copyOutput('smart')" id="btn-copy" class="px-2.5 py-1 text-[11px] font-semibold text-slate-800 hover:text-slate-950 inline-flex items-center space-x-1.5 transition-colors" title="Sao chép thông minh: Dán vào Word/Docs có sẵn tiêu đề H1/H2 in đậm chuẩn, dán vào Notepad ra chữ sạch">
+                <svg class="w-3.5 h-3.5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+                <span id="copy-btn-text">Sao chép</span>
+              </button>
+              <button onclick="toggleCopyMenu(event)" class="px-1.5 py-1 border-l border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-50 rounded-r-lg">
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            </div>
+
+            <!-- DROPDOWN OPTIONS -->
+            <div id="copy-menu" class="hidden absolute right-0 mt-1 w-64 bg-white rounded-xl shadow-xl border border-slate-200 py-1.5 z-30 text-xs">
+              <button onclick="copyOutput('rich')" class="w-full text-left px-3 py-2 hover:bg-slate-50 flex items-start space-x-2 text-slate-700 hover:text-slate-900">
+                <span class="text-blue-600 text-sm mt-0.5">📄</span>
+                <div>
+                  <b class="block font-semibold">Sao chép định dạng (Word / Docs / Web)</b>
+                  <span class="text-[10px] text-slate-500">Giữ nguyên thẻ H1, H2, in đậm, danh sách...</span>
+                </div>
+              </button>
+              <button onclick="copyOutput('clean')" class="w-full text-left px-3 py-2 hover:bg-slate-50 flex items-start space-x-2 text-slate-700 hover:text-slate-900 border-t border-slate-100">
+                <span class="text-emerald-600 text-sm mt-0.5">✨</span>
+                <div>
+                  <b class="block font-semibold">Sao chép văn bản sạch</b>
+                  <span class="text-[10px] text-slate-500">Đã lọc sạch hoàn toàn dấu thăng (#) và dấu sao (*)</span>
+                </div>
+              </button>
+              <button onclick="copyOutput('markdown')" class="w-full text-left px-3 py-2 hover:bg-slate-50 flex items-start space-x-2 text-slate-700 hover:text-slate-900 border-t border-slate-100">
+                <span class="text-purple-600 text-sm mt-0.5">#️⃣</span>
+                <div>
+                  <b class="block font-semibold">Sao chép mã Markdown thô</b>
+                  <span class="text-[10px] text-slate-500">Dành cho Notion raw, GitHub hoặc chỉnh sửa</span>
+                </div>
+              </button>
+            </div>
+          </div>
+
           <span class="text-slate-300">•</span>
-          <button onclick="downloadOutput()" class="hover:text-slate-900 font-medium text-[11px] inline-flex items-center space-x-1">
-            <svg class="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-            </svg>
-            <span>Tải file .txt</span>
-          </button>
+
+          <!-- DOWNLOAD OPTIONS -->
+          <div class="flex items-center space-x-1">
+            <button onclick="downloadOutputDoc()" class="hover:text-slate-900 font-medium text-[11px] inline-flex items-center space-x-1 px-2 py-1 rounded-lg border border-slate-200 bg-white hover:border-slate-300 shadow-xs" title="Tải file Word (.doc) có sẵn định dạng tiêu đề, in đậm">
+              <svg class="w-3.5 h-3.5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>File Word</span>
+            </button>
+            <button onclick="downloadOutputTxt()" class="hover:text-slate-900 font-medium text-[11px] inline-flex items-center space-x-1 px-2 py-1 rounded-lg border border-slate-200 bg-white hover:border-slate-300 shadow-xs" title="Tải file văn bản thuần sạch (.txt)">
+              <span>.txt</span>
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- OUTPUT CONTAINER -->
-      <div class="flex-1 p-4 sm:p-6 overflow-hidden flex flex-col relative">
+      <div class="flex-1 p-4 sm:p-6 overflow-hidden flex flex-col relative bg-white">
         
         <!-- EMPTY PLACEHOLDER -->
         <div id="output-placeholder" class="h-full flex flex-col items-center justify-center text-center px-4">
@@ -287,8 +350,12 @@
           </p>
         </div>
 
-        <!-- READONLY OUTPUT TEXTAREA -->
-        <textarea id="output-text" readonly placeholder="" class="hidden w-full flex-1 bg-transparent text-[15px] leading-relaxed text-slate-900 border-none outline-none resize-none custom-scroll focus:ring-0"></textarea>
+        <!-- 1. RICH TEXT FORMATTED VIEW (DEFAULT SHOWN) -->
+        <div id="output-rich" class="hidden w-full flex-1 overflow-y-auto custom-scroll text-[15px] leading-relaxed text-slate-800 pr-2 select-text">
+        </div>
+
+        <!-- 2. RAW TEXTAREA (OPTIONAL / TOGGLEABLE) -->
+        <textarea id="output-text" readonly placeholder="" class="hidden w-full flex-1 bg-transparent text-[13.5px] font-mono leading-relaxed text-slate-800 border-none outline-none resize-none custom-scroll focus:ring-0"></textarea>
 
       </div>
 
@@ -677,6 +744,7 @@
     let selectedPackageId = null;
     
     const SAMPLES = {
+      seo: `Trong kỷ nguyên số ngày nay, vít chữ thập đầu bằng inox 304 đóng vai trò vô cùng quan trọng trong ngành cơ khí và thi công nội thất. Không thể phủ nhận rằng với khả năng chống gỉ sét tuyệt vời, đây chính là chìa khóa vàng giúp các công trình bền đẹp theo thời gian. Bài viết này sẽ mang lại bức tranh toàn cảnh về sản phẩm. Hãy cùng chúng tôi khám phá thông số kỹ thuật chi tiết ngay sau đây!`,
       social: `Trong kỷ nguyên số hiện nay, marketing đóng vai trò vô cùng quan trọng đối với sự thành công của doanh nghiệp. Không thể phủ nhận rằng nếu không có một chiến lược rõ ràng, bạn sẽ vô hình trung đánh mất đi bức tranh toàn cảnh và chìa khóa vàng để tiếp cận khách hàng. Hãy cùng chúng tôi khám phá những giải pháp tuyệt vời ngay hôm nay nhé! Chúc các bạn thành công!`,
       academic: `Trong bối cảnh thời đại 4.0 phát triển như vũ bão, quản trị nhân lực đóng vai trò then chốt không thể thiếu trong sự trường tồn của tổ chức. Như chúng ta đã biết, việc áp dụng công nghệ tạo nên bước đệm vững chắc và mang lại những giá trị vượt trội. Tóm lại, việc tối ưu hóa nhân sự là một phần không thể tách rời của mọi doanh nghiệp hiện đại.`
     };
@@ -939,6 +1007,9 @@
     }
 
     function loadSample(type) {
+      if (type === 'seo') selectMode('blog_seo');
+      else if (type === 'academic') selectMode('academic');
+      else if (type === 'social') selectMode('social_mkt');
       document.getElementById('input-text').value = SAMPLES[type] || '';
       updateCounts();
       runAudit();
@@ -947,8 +1018,13 @@
     function clearAll() {
       document.getElementById('input-text').value = '';
       document.getElementById('output-text').value = '';
+      document.getElementById('output-rich').innerHTML = '';
       document.getElementById('output-text').classList.add('hidden');
+      document.getElementById('output-rich').classList.add('hidden');
       document.getElementById('output-placeholder').classList.remove('hidden');
+      document.getElementById('output-view-tabs').classList.add('hidden');
+      document.getElementById('output-word-count').innerText = '0 từ';
+      currentHumanizedData = { raw: '', clean: '', html: '' };
       updateCounts();
       resetAuditDisplay();
     }
@@ -1106,13 +1182,26 @@
           return;
         }
 
-        // Display Output
-        document.getElementById('output-placeholder').classList.add('hidden');
-        const outputArea = document.getElementById('output-text');
-        outputArea.classList.remove('hidden');
-        outputArea.value = data.humanized_text;
+        // Display Output in Rich View by Default
+        const rawText = data.humanized_text || '';
+        const cleanText = data.clean_text || parseMarkdownToClean(rawText);
+        const richHtml = data.humanized_html || parseMarkdownToHtml(rawText);
 
-        const outWords = data.humanized_text.trim().split(/\s+/).length;
+        currentHumanizedData = {
+          raw: rawText,
+          clean: cleanText,
+          html: richHtml
+        };
+
+        document.getElementById('output-placeholder').classList.add('hidden');
+        document.getElementById('output-view-tabs').classList.remove('hidden');
+
+        document.getElementById('output-rich').innerHTML = currentHumanizedData.html;
+        document.getElementById('output-text').value = currentHumanizedData.raw;
+
+        switchOutputView('rich');
+
+        const outWords = rawText.trim().split(/\s+/).length;
         document.getElementById('output-word-count').innerText = outWords + ' từ';
 
         // Update word balance
@@ -1136,31 +1225,279 @@
       }
     }
 
-    function copyOutput() {
-      const text = document.getElementById('output-text').value;
-      if (!text) {
+    // STATE & CONVERTERS
+    let currentHumanizedData = { raw: '', clean: '', html: '' };
+    let currentOutputView = 'rich';
+
+    function parseMarkdownToHtml(md) {
+      if (!md) return '';
+      const lines = md.split('\n');
+      let html = [];
+      let inUl = false;
+      let inOl = false;
+
+      function closeList() {
+        if (inUl) { html.push('</ul>'); inUl = false; }
+        if (inOl) { html.push('</ol>'); inOl = false; }
+      }
+
+      for (let rawLine of lines) {
+        let line = rawLine.trim();
+        if (!line) {
+          closeList();
+          continue;
+        }
+
+        // Đường kẻ ngang
+        if (line === '---' || line === '***' || line === '___') {
+          closeList();
+          html.push('<hr class="my-5 border-slate-200" />');
+          continue;
+        }
+
+        // Thẻ H1
+        if (line.startsWith('# ')) {
+          closeList();
+          let title = line.substring(2).replace(/\*\*(.*?)\*\*/g, '$1').trim();
+          html.push(`<h1 class="text-xl sm:text-2xl font-black text-slate-900 pb-2.5 border-b border-slate-200 mt-2 mb-4 leading-tight">${title}</h1>`);
+          continue;
+        }
+
+        // Thẻ H2
+        if (line.startsWith('## ')) {
+          closeList();
+          let title = line.substring(3).replace(/\*\*(.*?)\*\*/g, '$1').trim();
+          html.push(`<h2 class="text-base sm:text-lg font-bold text-slate-900 mt-5 mb-2.5 flex items-center gap-2"><span class="w-1.5 h-4 bg-blue-600 rounded-full inline-block"></span>${title}</h2>`);
+          continue;
+        }
+
+        // Thẻ H3
+        if (line.startsWith('### ')) {
+          closeList();
+          let title = line.substring(4).replace(/\*\*(.*?)\*\*/g, '$1').trim();
+          html.push(`<h3 class="text-sm sm:text-base font-bold text-slate-800 mt-4 mb-2">${title}</h3>`);
+          continue;
+        }
+
+        // Thẻ H4
+        if (line.startsWith('#### ')) {
+          closeList();
+          let title = line.substring(5).replace(/\*\*(.*?)\*\*/g, '$1').trim();
+          html.push(`<h4 class="text-xs sm:text-sm font-semibold text-slate-700 mt-3 mb-1.5">${title}</h4>`);
+          continue;
+        }
+
+        // Meta Description Box
+        if (line.toLowerCase().startsWith('**meta description:**') || line.toLowerCase().startsWith('meta description:')) {
+          closeList();
+          let desc = line.replace(/^\*{0,2}Meta Description:\*{0,2}\s*/i, '');
+          desc = desc.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-emerald-950">$1</strong>');
+          html.push(`
+            <div class="my-4 p-3.5 bg-emerald-50/70 border border-emerald-200 rounded-xl text-xs text-emerald-900 leading-relaxed shadow-xs">
+              <div class="flex items-center space-x-1.5 font-bold uppercase tracking-wider text-[10.5px] text-emerald-800 mb-1">
+                <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Meta Description Chuẩn SEO (150-160 ký tự)</span>
+              </div>
+              <div>${desc}</div>
+            </div>
+          `);
+          continue;
+        }
+
+        // Bullet List (- hoặc *)
+        if (/^[-*]\s+/.test(line)) {
+          if (inOl) closeList();
+          if (!inUl) {
+            html.push('<ul class="space-y-1.5 my-2.5 pl-1">');
+            inUl = true;
+          }
+          let item = line.replace(/^[-*]\s+/, '');
+          item = item.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-slate-900">$1</strong>');
+          item = item.replace(/(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)/g, '<em class="italic text-slate-800">$1</em>');
+          html.push(`<li class="flex items-start text-[14px] text-slate-700 leading-relaxed"><span class="text-blue-500 font-bold mr-2 select-none">•</span><span>${item}</span></li>`);
+          continue;
+        }
+
+        // Numbered List (1., 2.)
+        let numMatch = line.match(/^(\d+)\.\s+(.*)/);
+        if (numMatch) {
+          if (inUl) closeList();
+          if (!inOl) {
+            html.push('<ol class="space-y-1.5 my-2.5 pl-1">');
+            inOl = true;
+          }
+          let item = numMatch[2];
+          item = item.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-slate-900">$1</strong>');
+          item = item.replace(/(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)/g, '<em class="italic text-slate-800">$1</em>');
+          html.push(`<li class="flex items-start text-[14px] text-slate-700 leading-relaxed"><span class="font-bold text-slate-900 mr-2 min-w-[20px] select-none">${numMatch[1]}.</span><span>${item}</span></li>`);
+          continue;
+        }
+
+        // Đoạn văn thông thường
+        closeList();
+        let para = line.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-slate-900">$1</strong>');
+        para = para.replace(/(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)/g, '<em class="italic text-slate-800">$1</em>');
+        html.push(`<p class="mb-3 text-[14.5px] leading-relaxed text-slate-700">${para}</p>`);
+      }
+
+      closeList();
+      return html.join('\n');
+    }
+
+    function parseMarkdownToClean(md) {
+      if (!md) return '';
+      return md.split('\n').map(line => {
+        let trimmed = line.trim();
+        if (trimmed === '---' || trimmed === '***' || trimmed === '___') return '';
+        let clean = line.replace(/^#{1,6}\s*/, '');
+        clean = clean.replace(/\*\*(.*?)\*\*/g, '$1');
+        clean = clean.replace(/__(.*?)__/g, '$1');
+        clean = clean.replace(/(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)/g, '$1');
+        clean = clean.replace(/^>\s*/, '');
+        clean = clean.replace(/`(.*?)`/g, '$1');
+        return clean;
+      }).join('\n').trim();
+    }
+
+    function switchOutputView(mode) {
+      currentOutputView = mode;
+      const richDiv = document.getElementById('output-rich');
+      const rawTextarea = document.getElementById('output-text');
+      const tabRich = document.getElementById('tab-view-rich');
+      const tabRaw = document.getElementById('tab-view-raw');
+
+      if (mode === 'rich') {
+        richDiv.classList.remove('hidden');
+        rawTextarea.classList.add('hidden');
+
+        tabRich.className = 'px-2 py-0.5 rounded-md bg-white text-slate-900 shadow-xs transition-all flex items-center space-x-1 font-semibold';
+        tabRaw.className = 'px-2 py-0.5 rounded-md text-slate-600 hover:text-slate-900 transition-all flex items-center space-x-1 font-normal';
+      } else {
+        richDiv.classList.add('hidden');
+        rawTextarea.classList.remove('hidden');
+
+        tabRaw.className = 'px-2 py-0.5 rounded-md bg-white text-slate-900 shadow-xs transition-all flex items-center space-x-1 font-semibold';
+        tabRich.className = 'px-2 py-0.5 rounded-md text-slate-600 hover:text-slate-900 transition-all flex items-center space-x-1 font-normal';
+      }
+    }
+
+    function toggleCopyMenu(e) {
+      if (e) e.stopPropagation();
+      const menu = document.getElementById('copy-menu');
+      if (menu) menu.classList.toggle('hidden');
+    }
+
+    document.addEventListener('click', (e) => {
+      const container = document.getElementById('copy-dropdown-container');
+      const menu = document.getElementById('copy-menu');
+      if (container && !container.contains(e.target) && menu) {
+        menu.classList.add('hidden');
+      }
+    });
+
+    async function copyOutput(type = 'smart') {
+      const menu = document.getElementById('copy-menu');
+      if (menu) menu.classList.add('hidden');
+
+      if (!currentHumanizedData.raw && !document.getElementById('output-text').value) {
         showToast('Chưa có nội dung để sao chép.', 'warning');
         return;
       }
-      navigator.clipboard.writeText(text);
+
+      if (!currentHumanizedData.raw) {
+        currentHumanizedData.raw = document.getElementById('output-text').value;
+        currentHumanizedData.clean = parseMarkdownToClean(currentHumanizedData.raw);
+        currentHumanizedData.html = parseMarkdownToHtml(currentHumanizedData.raw);
+      }
+
       const btnText = document.getElementById('copy-btn-text');
-      btnText.innerText = 'Đã chép!';
-      setTimeout(() => { btnText.innerText = 'Sao chép'; }, 2000);
-      showToast('Đã sao chép vào bộ nhớ tạm.', 'success');
+
+      try {
+        if (type === 'smart' || type === 'rich') {
+          if (navigator.clipboard && window.ClipboardItem) {
+            const htmlBlob = new Blob([currentHumanizedData.html], { type: 'text/html' });
+            const textBlob = new Blob([currentHumanizedData.clean], { type: 'text/plain' });
+            await navigator.clipboard.write([
+              new ClipboardItem({
+                'text/html': htmlBlob,
+                'text/plain': textBlob
+              })
+            ]);
+            showToast('✓ Đã chép định dạng! Dán vào Word/Docs có sẵn H1, H2, in đậm; dán vào Notepad ra chữ sạch không dấu #', 'success');
+          } else {
+            await navigator.clipboard.writeText(currentHumanizedData.clean);
+            showToast('✓ Đã chép văn bản sạch vào bộ nhớ tạm!', 'success');
+          }
+        } else if (type === 'clean') {
+          await navigator.clipboard.writeText(currentHumanizedData.clean);
+          showToast('✓ Đã sao chép văn bản sạch (đã lọc sạch hoàn toàn dấu # và *)!', 'success');
+        } else if (type === 'markdown') {
+          await navigator.clipboard.writeText(currentHumanizedData.raw);
+          showToast('✓ Đã sao chép mã nguồn Markdown!', 'info');
+        }
+
+        btnText.innerText = 'Đã chép!';
+        setTimeout(() => { btnText.innerText = 'Sao chép'; }, 2000);
+      } catch (err) {
+        navigator.clipboard.writeText(currentHumanizedData.clean || currentHumanizedData.raw);
+        showToast('✓ Đã sao chép vào bộ nhớ tạm!', 'success');
+        btnText.innerText = 'Đã chép!';
+        setTimeout(() => { btnText.innerText = 'Sao chép'; }, 2000);
+      }
     }
 
-    function downloadOutput() {
-      const text = document.getElementById('output-text').value;
+    function downloadOutputDoc() {
+      if (!currentHumanizedData.html && !document.getElementById('output-text').value) {
+        showToast('Chưa có nội dung để tải.', 'warning');
+        return;
+      }
+      if (!currentHumanizedData.html) {
+        currentHumanizedData.html = parseMarkdownToHtml(document.getElementById('output-text').value);
+      }
+      const title = 'bai-viet-chuan-hoa-' + Date.now();
+      const docHtml = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+        <head>
+          <meta charset='utf-8'>
+          <title>${title}</title>
+          <style>
+            body { font-family: 'Times New Roman', 'Arial', serif; font-size: 14pt; line-height: 1.6; color: #111827; }
+            h1 { font-size: 20pt; font-weight: bold; color: #000; margin-top: 18pt; margin-bottom: 10pt; }
+            h2 { font-size: 16pt; font-weight: bold; color: #1e3a8a; margin-top: 16pt; margin-bottom: 8pt; }
+            h3 { font-size: 14pt; font-weight: bold; color: #374151; margin-top: 12pt; margin-bottom: 6pt; }
+            p { margin-bottom: 10pt; }
+            ul, ol { margin-top: 6pt; margin-bottom: 10pt; padding-left: 24pt; }
+            li { margin-bottom: 4pt; }
+            strong { font-weight: bold; }
+          </style>
+        </head>
+        <body>
+          ${currentHumanizedData.html}
+        </body>
+        </html>
+      `;
+      const blob = new Blob(['\ufeff' + docHtml], { type: 'application/msword;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${title}.doc`;
+      a.click();
+      showToast('Đang tải file Word (.doc) về máy...', 'success');
+    }
+
+    function downloadOutputTxt() {
+      const text = currentHumanizedData.clean || document.getElementById('output-text').value;
       if (!text) {
         showToast('Chưa có nội dung để tải.', 'warning');
         return;
       }
-      const blob = new Blob([text], {type: 'text/plain;charset=utf-8'});
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `van-ban-chuan-hoa-${Date.now()}.txt`;
+      a.download = `van-ban-sach-${Date.now()}.txt`;
       a.click();
-      showToast('Đang tải file về máy...', 'info');
+      showToast('Đang tải file .txt về máy...', 'info');
     }
 
     function toggleFullScreen() {
