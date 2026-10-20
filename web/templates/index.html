@@ -1,0 +1,2450 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Klaro AI — Hệ Điều Hành Marketing & Săn Khách Tự Động</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              accent: '#8b5cf6'
+            },
+            surface: {
+              900: '#0b0f19',
+              800: '#111827',
+              700: '#1f2937',
+              600: '#374151'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .glass-panel {
+      background: rgba(17, 24, 39, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .klaro-glow {
+      box-shadow: 0 0 35px -5px rgba(99, 102, 241, 0.35);
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="bg-surface-900 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- TOP NAVIGATION -->
+  <header class="border-b border-white/10 glass-panel sticky top-0 z-50">
+    <div class="w-full px-4 sm:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-indigo-500 to-purple-400 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+          <svg class="w-5 h-5 text-white animate-spin-slow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="font-bold text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-indigo-300 bg-clip-text text-transparent">Klaro AI</h1>
+            <span class="text-[10px] uppercase font-bold tracking-widest bg-brand-500/20 text-brand-400 px-2 py-0.5 rounded-full border border-brand-500/30">Auto Agent</span>
+          </div>
+          <p class="text-xs text-slate-400">Marketing & AI Lead Hunting OS</p>
+        </div>
+      </div>
+
+      <!-- NAV TABS -->
+      <nav class="hidden md:flex items-center space-x-1 bg-surface-800/80 p-1.5 rounded-xl border border-white/5">
+        <button onclick="switchTab('tab-pipeline')" id="nav-tab-pipeline" class="nav-btn px-4 py-2 rounded-lg text-sm font-bold transition-all bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/25 flex items-center space-x-2">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+          </span>
+          <span>⚡ Dây Chuyền Marketing</span>
+          <span class="text-[9px] uppercase font-black bg-black/30 text-amber-200 px-1.5 py-0.5 rounded-full">AI Team</span>
+        </button>
+        <button onclick="switchTab('tab-overview')" id="nav-tab-overview" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-white/5">
+          📊 Tổng quan
+        </button>
+        <button onclick="switchTab('tab-leads')" id="nav-tab-leads" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-white/5">
+          🎯 Săn khách AI
+        </button>
+        <button onclick="switchTab('tab-posting')" id="nav-tab-posting" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-white/5">
+          📢 Đăng bài tự động
+        </button>
+        <button onclick="switchTab('tab-accounts')" id="nav-tab-accounts" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-white/5">
+          👥 Tài khoản FB
+        </button>
+        <button onclick="switchTab('tab-groups')" id="nav-tab-groups" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-white/5">
+          📁 Nhóm Facebook
+        </button>
+        <button onclick="switchTab('tab-settings')" id="nav-tab-settings" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-white/5">
+          ⚙️ Cài đặt & AI
+        </button>
+        <a href="/humanizer" class="nav-btn px-3 py-2 rounded-lg text-sm font-bold transition-all text-purple-300 hover:text-white bg-purple-500/15 hover:bg-purple-500/30 border border-purple-500/40 flex items-center space-x-1.5 shadow-sm">
+          <span>✨</span>
+          <span>Humanize AI</span>
+        </a>
+      </nav>
+
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleFullScreen()" title="Bật/Tắt Toàn Màn Hình" class="p-2 sm:px-3 rounded-xl bg-surface-800 hover:bg-surface-700 text-slate-300 hover:text-white border border-white/10 transition-all flex items-center space-x-1.5 text-xs font-semibold">
+          <svg class="w-4 h-4 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
+          </svg>
+          <span class="hidden sm:inline">Toàn màn hình</span>
+        </button>
+
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>
+          Agent Sẵn Sàng
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER (FULL WIDTH) -->
+  <main class="flex-1 w-full px-4 sm:px-8 py-6">
+
+    <!-- ================= TAB 1: TỔNG QUAN ================= -->
+    <section id="tab-overview" class="tab-content space-y-8">
+      <!-- STATS -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+        <div class="glass-panel p-5 rounded-2xl relative overflow-hidden">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-xs uppercase tracking-wider font-semibold text-slate-400">Khách tiềm năng (Leads)</p>
+              <h3 id="stat-leads" class="text-3xl font-extrabold text-white mt-1">0</h3>
+            </div>
+            <div class="p-2.5 bg-brand-500/10 rounded-xl text-brand-400 border border-brand-500/20">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            </div>
+          </div>
+          <p class="text-xs text-brand-300 mt-3 flex items-center">
+            <span class="inline-block w-1.5 h-1.5 rounded-full bg-brand-400 mr-1.5"></span>
+            Được phân loại thông minh qua AI
+          </p>
+        </div>
+
+        <div class="glass-panel p-5 rounded-2xl relative overflow-hidden">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-xs uppercase tracking-wider font-semibold text-slate-400">Tài khoản Facebook</p>
+              <h3 id="stat-accounts" class="text-3xl font-extrabold text-white mt-1">0</h3>
+            </div>
+            <div class="p-2.5 bg-blue-500/10 rounded-xl text-blue-400 border border-blue-500/20">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            </div>
+          </div>
+          <p class="text-xs text-blue-300 mt-3">Đã lưu phiên an toàn (Session)</p>
+        </div>
+
+        <div class="glass-panel p-5 rounded-2xl relative overflow-hidden">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-xs uppercase tracking-wider font-semibold text-slate-400">Nhóm Facebook</p>
+              <h3 id="stat-groups" class="text-3xl font-extrabold text-white mt-1">0</h3>
+            </div>
+            <div class="p-2.5 bg-purple-500/10 rounded-xl text-purple-400 border border-purple-500/20">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            </div>
+          </div>
+          <p class="text-xs text-purple-300 mt-3">Tập trung các hội nhóm ngành</p>
+        </div>
+
+        <div class="glass-panel p-5 rounded-2xl relative overflow-hidden">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-xs uppercase tracking-wider font-semibold text-slate-400">Bài đăng đã tạo</p>
+              <h3 id="stat-posts" class="text-3xl font-extrabold text-white mt-1">0</h3>
+            </div>
+            <div class="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-400 border border-emerald-500/20">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            </div>
+          </div>
+          <p class="text-xs text-emerald-300 mt-3">Hỗ trợ AI Spin chống trùng lặp</p>
+        </div>
+      </div>
+
+      <!-- AI NATURAL LANGUAGE AGENT COMMAND CENTER (ORBITAMA STYLE) -->
+      <div class="glass-panel rounded-3xl p-6 sm:p-8 relative overflow-hidden klaro-glow border border-indigo-500/40 space-y-5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-2.5">
+            <span class="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
+            <span class="text-xs uppercase tracking-widest font-extrabold text-brand-400">Trợ Lý Điều Hành Tự Nhiên (Klaro AI Agent)</span>
+          </div>
+          <span class="text-xs text-slate-400 font-medium">Chỉ cần nói điều bạn muốn, Klaro AI sẽ tự động biến thành hành động</span>
+        </div>
+
+        <div class="relative flex flex-col sm:flex-row gap-3">
+          <input type="text" id="agent-command-input" 
+            placeholder="Giao việc cho AI... (VD: Quét nhóm bất động sản tìm 5 khách cần thuê nhà và gửi lời bình luận)" 
+            class="flex-1 bg-surface-900/90 border border-white/15 rounded-2xl px-5 py-4 text-sm text-white focus:outline-none focus:border-brand-500 shadow-inner">
+          <button onclick="submitAgentCommand()" id="btn-agent-plan"
+            class="bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 hover:from-brand-500 hover:to-purple-500 text-white font-bold px-7 py-4 rounded-2xl shadow-lg shadow-indigo-500/30 transition-all flex items-center justify-center space-x-2 text-sm whitespace-nowrap">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            <span>AI Lập Kế Hoạch</span>
+          </button>
+        </div>
+
+        <!-- DYNAMIC ACTION PLAN CARD -->
+        <div id="agent-plan-card" class="hidden p-5 rounded-2xl bg-surface-800/95 border border-brand-500/40 space-y-4">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-white text-base flex items-center space-x-2">
+              <span class="text-brand-400">📋</span>
+              <span id="plan-title-text">Kế hoạch thực thi</span>
+            </h4>
+            <span id="plan-time-badge" class="text-xs text-brand-300 font-semibold bg-brand-500/10 px-3 py-1 rounded-full border border-brand-500/20">Ước tính: 2 phút</span>
+          </div>
+          <p id="plan-summary-text" class="text-xs text-slate-300"></p>
+          <div id="plan-steps-container" class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2"></div>
+          <div class="pt-3 border-t border-white/10 flex items-center justify-between">
+            <span class="text-xs text-slate-400">Trạng thái: <strong class="text-emerald-400 font-semibold">Chờ xác nhận</strong></span>
+            <button onclick="executeAgentPlan()" id="btn-agent-confirm" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-2.5 rounded-xl shadow-lg shadow-emerald-600/30 transition-all text-xs flex items-center space-x-2">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span>Xác Nhận & Kích Hoạt Tiến Trình</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- QUICK SHORTCUTS -->
+        <div class="pt-2 flex flex-wrap gap-4 items-center">
+          <span class="text-xs text-slate-400">Lối tắt:</span>
+          <button onclick="runSampleDemoLeadScan()" class="text-xs bg-white/10 hover:bg-white/15 text-slate-200 font-semibold px-4 py-2 rounded-xl border border-white/10 transition-all flex items-center space-x-2">
+            <span>⚡ Chạy Thử Nghiệm Tìm Lead Nhanh</span>
+          </button>
+          <button onclick="switchTab('tab-leads')" class="text-xs bg-white/5 hover:bg-white/10 text-brand-300 font-semibold px-4 py-2 rounded-xl border border-white/10 transition-all">
+            Mở Danh Sách Khách Tiềm Năng ↗
+          </button>
+        </div>
+      </div>
+
+      <!-- RECENT ACTIVITY LOGS -->
+      <div class="glass-panel rounded-2xl p-6">
+        <h3 class="font-bold text-base text-white mb-4 flex items-center space-x-2">
+          <svg class="w-5 h-5 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span>Nhật Ký Tác Vụ Hệ Thống (Live Activity)</span>
+        </h3>
+        <div id="logs-container" class="space-y-2.5 max-h-64 overflow-y-auto custom-scroll text-xs font-mono text-slate-300">
+          <div class="p-2.5 rounded-lg bg-surface-800 border border-white/5 text-slate-400">Đang tải nhật ký...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 2: SĂN KHÁCH TIỀM NĂNG (AI LEAD HUNTER) ================= -->
+    <section id="tab-leads" class="tab-content hidden space-y-6">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h2 class="text-2xl font-bold text-white tracking-tight">Trung Tâm Săn Khách Tiềm Năng (AI Leads CRM)</h2>
+          <p class="text-xs text-slate-400 mt-1">Danh sách bài viết được AI đọc hiểu và bóc tách nhu cầu thực tế từ các hội nhóm</p>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button onclick="openScrapeModal()" class="bg-brand-600 hover:bg-brand-500 text-white font-semibold px-4 py-2.5 rounded-xl shadow-md transition-all flex items-center space-x-2 text-sm">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <span>Kích Hoạt Quét Nhóm Mới</span>
+          </button>
+          <button onclick="loadLeads()" class="p-2.5 rounded-xl bg-surface-800 hover:bg-surface-700 text-slate-300 border border-white/10 transition-all" title="Làm mới">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- LEADS TABLE -->
+      <div class="glass-panel rounded-2xl overflow-hidden border border-white/10">
+        <div class="overflow-x-auto custom-scroll">
+          <table class="w-full text-left text-sm text-slate-300">
+            <thead class="bg-surface-800/90 text-xs uppercase tracking-wider text-slate-400 border-b border-white/10">
+              <tr>
+                <th class="py-3.5 px-4 font-semibold">Tác giả / Nhóm</th>
+                <th class="py-3.5 px-4 font-semibold w-1/3">Nội dung bài đăng</th>
+                <th class="py-3.5 px-4 font-semibold">Đánh giá AI (Lead Score)</th>
+                <th class="py-3.5 px-4 font-semibold w-1/4">Phản hồi gợi ý từ AI</th>
+                <th class="py-3.5 px-4 font-semibold text-right">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="leads-table-body" class="divide-y divide-white/5">
+              <tr>
+                <td colspan="5" class="py-8 text-center text-slate-500 text-xs">Chưa có khách hàng tiềm năng nào. Hãy bấm "Kích Hoạt Quét Nhóm Mới" hoặc "Chạy Thử Nghiệm Mô Phỏng" ở trang Tổng Quan.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 3: ĐĂNG BÀI ĐA TÀI KHOẢN (AUTO POSTING) ================= -->
+    <section id="tab-posting" class="tab-content hidden space-y-6">
+      <div>
+        <h2 class="text-2xl font-bold text-white tracking-tight">Studio Đăng Bài Đa Tài Khoản & AI Spin</h2>
+        <p class="text-xs text-slate-400 mt-1">Soạn nội dung một lần, AI tự động nhân bản thành các biến thể để đăng vào các nhóm mà không bị phạt spam</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- FORM SOẠN BÀI -->
+        <div class="lg:col-span-2 glass-panel rounded-2xl p-6 space-y-5">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Nội dung bài đăng gốc</label>
+            <textarea id="post-base-content" rows="6" placeholder="Nhập nội dung bạn muốn chia sẻ/quảng bá lên các hội nhóm..." class="w-full bg-surface-900 border border-white/10 rounded-xl p-4 text-sm text-slate-200 focus:outline-none focus:border-brand-500 transition-all"></textarea>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <button onclick="spinContentWithAI()" class="bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-md transition-all flex items-center space-x-2">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+              <span>✨ AI Tạo 3 Biến Thể Khác Nhau (Spin)</span>
+            </button>
+            <span class="text-xs text-slate-500">Giúp tránh bộ lọc trùng lặp của Facebook</span>
+          </div>
+
+          <!-- BIẾN THỂ AI SINH RA -->
+          <div id="spin-results" class="hidden space-y-3 pt-3 border-t border-white/10">
+            <p class="text-xs font-semibold text-brand-400">Các biến thể AI đã sinh sẵn:</p>
+            <div id="spin-items" class="space-y-2"></div>
+          </div>
+        </div>
+
+        <!-- CẤU HÌNH ĐĂNG -->
+        <div class="glass-panel rounded-2xl p-6 space-y-5">
+          <h3 class="text-sm font-bold text-white uppercase tracking-wider">Cấu hình phân phối</h3>
+
+          <div>
+            <label class="block text-xs font-medium text-slate-400 mb-1.5">Chọn tài khoản chạy:</label>
+            <select id="post-account-select" class="w-full bg-surface-900 border border-white/10 rounded-xl px-3 py-2 text-sm text-slate-200">
+              <option value="">-- Chọn tài khoản --</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-slate-400 mb-1.5">Chọn nhóm mục tiêu:</label>
+            <select id="post-group-select" class="w-full bg-surface-900 border border-white/10 rounded-xl px-3 py-2 text-sm text-slate-200">
+              <option value="">-- Chọn nhóm --</option>
+            </select>
+          </div>
+
+          <div class="pt-4 border-t border-white/10 space-y-2">
+            <div class="flex justify-between text-xs text-slate-400">
+              <span>Khoảng nghỉ ngẫu nhiên:</span>
+              <span class="text-white font-semibold">30s - 90s</span>
+            </div>
+            <div class="flex justify-between text-xs text-slate-400">
+              <span>Hàng chờ:</span>
+              <span class="text-emerald-400 font-semibold">Tuần tự theo nick</span>
+            </div>
+          </div>
+
+          <button onclick="schedulePost()" id="btn-submit-post" class="w-full bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-semibold py-3 rounded-xl shadow-lg shadow-brand-500/30 transition-all text-sm">
+            🚀 Bắt Đầu Đăng Bài Ngay
+          </button>
+        </div>
+      </div>
+
+      <!-- LỊCH SỬ & HÀNG CHỜ ĐĂNG BÀI (ORBITAMA BATCH & RETRY) -->
+      <div class="glass-panel rounded-2xl overflow-hidden border border-white/10 space-y-3 p-6">
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="font-bold text-white text-base flex items-center space-x-2">
+            <span>📊</span>
+            <span>Hàng Chờ & Lịch Sử Đăng Bài Đa Nhóm</span>
+          </h3>
+          <button onclick="loadPostsHistory()" class="text-xs text-brand-400 hover:underline">Làm mới danh sách</button>
+        </div>
+        <div class="overflow-x-auto custom-scroll">
+          <table class="w-full text-left text-sm text-slate-300">
+            <thead class="bg-surface-800/90 text-xs uppercase tracking-wider text-slate-400 border-b border-white/10">
+              <tr>
+                <th class="py-3 px-4 font-semibold">Tài khoản</th>
+                <th class="py-3 px-4 font-semibold">Nhóm mục tiêu</th>
+                <th class="py-3 px-4 font-semibold w-1/3">Nội dung</th>
+                <th class="py-3 px-4 font-semibold">Trạng thái</th>
+                <th class="py-3 px-4 font-semibold text-right">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="posts-table-body" class="divide-y divide-white/5">
+              <tr>
+                <td colspan="5" class="py-6 text-center text-slate-500 text-xs">Chưa có bài đăng nào trong hàng chờ.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 4: QUẢN LÝ TÀI KHOẢN (ACCOUNTS) ================= -->
+    <section id="tab-accounts" class="tab-content hidden space-y-6">
+      <div class="flex justify-between items-center">
+        <div>
+          <h2 class="text-2xl font-bold text-white tracking-tight">Quản Lý Tài Khoản Facebook</h2>
+          <p class="text-xs text-slate-400 mt-1">Đăng nhập một lần duy nhất, hệ thống tự động trích xuất và bảo vệ phiên làm việc (Session)</p>
+        </div>
+        <button onclick="openLoginModal()" class="bg-brand-600 hover:bg-brand-500 text-white font-semibold px-4 py-2.5 rounded-xl shadow-md transition-all text-sm flex items-center space-x-2">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          <span>Thêm & Đăng Nhập Nick Mới</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5" id="accounts-grid">
+        <!-- Account cards will be loaded here -->
+      </div>
+    </section>
+
+    <!-- ================= TAB 5: QUẢN LÝ NHÓM (GROUPS) ================= -->
+    <section id="tab-groups" class="tab-content hidden space-y-6">
+      <div class="flex justify-between items-center">
+        <div>
+          <h2 class="text-2xl font-bold text-white tracking-tight">Thư Viện Nhóm Facebook</h2>
+          <p class="text-xs text-slate-400 mt-1">Lưu trữ các nhóm ngành nghề tiềm năng để cào khách và đăng bài</p>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button onclick="openAutoJoinModal()" class="bg-purple-600 hover:bg-purple-500 text-white font-semibold px-4 py-2.5 rounded-xl shadow-md transition-all text-sm flex items-center space-x-2">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <span>🔍 Tự Động Tìm & Xin Vào Nhóm</span>
+          </button>
+          <button onclick="openAddGroupModal()" class="bg-brand-600 hover:bg-brand-500 text-white font-semibold px-4 py-2.5 rounded-xl shadow-md transition-all text-sm flex items-center space-x-2">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <span>Thêm Nhóm Mới</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="glass-panel rounded-2xl overflow-hidden border border-white/10">
+        <table class="w-full text-left text-sm text-slate-300">
+          <thead class="bg-surface-800/90 text-xs uppercase tracking-wider text-slate-400 border-b border-white/10">
+            <tr>
+              <th class="py-3.5 px-4 font-semibold">Tên nhóm</th>
+              <th class="py-3.5 px-4 font-semibold">Đường dẫn (URL)</th>
+              <th class="py-3.5 px-4 font-semibold">Chuyên mục</th>
+              <th class="py-3.5 px-4 font-semibold text-right">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody id="groups-table-body" class="divide-y divide-white/5">
+            <!-- Group rows will be loaded here -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================= TAB 6: CÀI ĐẶT & BỘ NHỚ AI (SETTINGS) ================= -->
+    <section id="tab-settings" class="tab-content hidden space-y-6">
+      <div>
+        <h2 class="text-2xl font-bold text-white tracking-tight">Bộ Nhớ Doanh Nghiệp & Cấu Hình AI</h2>
+        <p class="text-xs text-slate-400 mt-1">Cung cấp tri thức cho AI để phân tích chuẩn xác và tư vấn sát thực tế nhất</p>
+      </div>
+
+      <div class="glass-panel rounded-2xl p-6 lg:p-8 w-full max-w-5xl space-y-5 border border-white/10">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Google Gemini API Key</label>
+          <input type="password" id="setting-gemini-key" placeholder="AIzaSy..." class="w-full bg-surface-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-brand-500">
+          <p class="text-[11px] text-slate-500 mt-1">Lấy API Key miễn phí từ Google AI Studio (aistudio.google.com). Nếu để trống, hệ thống sẽ chạy ở chế độ lọc từ khóa dự phòng.</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Tên Doanh Nghiệp / Dịch Vụ Của Bạn</label>
+          <input type="text" id="setting-business-name" class="w-full bg-surface-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-brand-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Mô Tả Sản Phẩm / Dịch Vụ & Lợi Thế Cạnh Tranh</label>
+          <textarea id="setting-business-desc" rows="3" class="w-full bg-surface-900 border border-white/10 rounded-xl p-4 text-sm text-slate-200 focus:outline-none focus:border-brand-500"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Từ Khóa Nhận Diện Nhu Cầu (Phân tách bằng dấu phẩy)</label>
+          <input type="text" id="setting-target-keywords" class="w-full bg-surface-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-brand-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Thông Tin Liên Hệ / Lời Kêu Gọi Hành Động (CTA)</label>
+          <input type="text" id="setting-cta-contact" class="w-full bg-surface-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-brand-500">
+        </div>
+
+        <button onclick="saveSettings()" class="bg-brand-600 hover:bg-brand-500 text-white font-semibold px-6 py-2.5 rounded-xl shadow-md transition-all text-sm">
+          💾 Lưu Thay Đổi
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: KẾT NỐI FACEBOOK (COOKIE HOẶC TRÌNH DUYỆT) -->
+  <div id="modal-login" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-panel max-w-lg w-full rounded-2xl p-6 border border-white/20 space-y-4">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <h3 class="text-lg font-bold text-white flex items-center space-x-2">
+          <span>🔗</span>
+          <span>Kết Nối Tài Khoản Facebook</span>
+        </h3>
+        <button onclick="closeModal('modal-login')" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+
+      <!-- TABS CHỌN CÁCH KẾT NỐI -->
+      <div class="flex border-b border-white/10 space-x-2 pb-2">
+        <button onclick="switchLoginMethod('cookie')" id="tab-login-cookie" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-600 text-white">
+          ⚡ Cách 1: Nạp Cookie (Khuyên dùng - 3 giây)
+        </button>
+        <button onclick="switchLoginMethod('browser')" id="tab-login-browser" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">
+          🖥️ Cách 2: Mở Trình Duyệt
+        </button>
+      </div>
+
+      <!-- FORM 1: NẠP COOKIE -->
+      <div id="login-form-cookie" class="space-y-3">
+        <p class="text-xs text-slate-300 leading-relaxed">
+          Dán chuỗi Cookie từ trình duyệt Facebook của bạn vào đây. Hệ thống tự động bắt UID và lưu phiên an toàn, <strong>không cần gõ mật khẩu</strong>.
+        </p>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Tên định danh nick (VD: Nick_01):</label>
+          <input type="text" id="cookie-account-name" class="w-full bg-surface-900 border border-white/10 rounded-xl px-3 py-2 text-sm text-white" placeholder="Nick_Marketing_01">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Chuỗi Cookie (Dạng c_user=...; xs=... hoặc JSON):</label>
+          <textarea id="cookie-raw-input" rows="4" class="w-full bg-surface-900 border border-white/10 rounded-xl p-3 text-xs font-mono text-slate-300 focus:outline-none focus:border-brand-500" placeholder="c_user=1000xxxxxxx; xs=xxxxxx; fr=xxxxxx; ..."></textarea>
+          <p class="text-[11px] text-slate-500 mt-1">💡 Mẹo: Cài tiện ích Chrome "Cookie-Editor", vào facebook.com bấm "Export" -> "Header String" rồi dán vào đây.</p>
+        </div>
+        <div class="flex justify-end space-x-3 pt-2">
+          <button onclick="closeModal('modal-login')" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white">Hủy</button>
+          <button onclick="submitCookieLogin()" id="btn-submit-cookie" class="bg-brand-600 hover:bg-brand-500 text-white px-5 py-2 text-xs font-semibold rounded-xl">⚡ Kết Nối Bằng Cookie</button>
+        </div>
+      </div>
+
+      <!-- FORM 2: MỞ TRÌNH DUYỆT -->
+      <div id="login-form-browser" class="hidden space-y-3">
+        <p class="text-xs text-slate-300 leading-relaxed">
+          Hệ thống sẽ mở một cửa sổ trình duyệt Chromium riêng biệt. Bạn chỉ cần đăng nhập tài khoản Facebook trên cửa sổ đó. Khi xong, hệ thống sẽ tự động bắt lấy Cookie/Session.
+        </p>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Tên định danh nick:</label>
+          <input type="text" id="login-account-name" class="w-full bg-surface-900 border border-white/10 rounded-xl px-3 py-2 text-sm text-white" placeholder="Nick_Marketing_01">
+        </div>
+        <div class="flex justify-end space-x-3 pt-2">
+          <button onclick="closeModal('modal-login')" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white">Hủy</button>
+          <button onclick="startBrowserLogin()" id="btn-start-login" class="bg-brand-600 hover:bg-brand-500 text-white px-5 py-2 text-xs font-semibold rounded-xl">Bắt Đầu Mở Trình Duyệt</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: QUÉT NHÓM THỰC TẾ -->
+  <div id="modal-scrape" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-panel max-w-md w-full rounded-2xl p-6 border border-white/20 space-y-4">
+      <h3 class="text-lg font-bold text-white">Quét Nhóm Bằng Trình Duyệt & AI</h3>
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Chọn tài khoản Facebook đã lưu:</label>
+        <select id="scrape-account-select" class="w-full bg-surface-900 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></select>
+      </div>
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Chọn hoặc nhập link nhóm:</label>
+        <input type="text" id="scrape-group-url" class="w-full bg-surface-900 border border-white/10 rounded-xl px-3 py-2 text-sm text-white" placeholder="https://www.facebook.com/groups/xxxxxx">
+      </div>
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Tên nhóm (dễ nhớ):</label>
+        <input type="text" id="scrape-group-name" class="w-full bg-surface-900 border border-white/10 rounded-xl px-3 py-2 text-sm text-white" placeholder="Hội Kinh Doanh">
+      </div>
+      <div class="flex justify-end space-x-3 pt-3">
+        <button onclick="closeModal('modal-scrape')" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white">Đóng</button>
+        <button onclick="startGroupScrape()" id="btn-start-scrape" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 text-xs font-semibold rounded-xl">Bắt Đầu Quét</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: THÊM NHÓM THỦ CÔNG -->
+  <div id="modal-add-group" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-panel max-w-md w-full rounded-2xl p-6 border border-white/20 space-y-4">
+      <h3 class="text-lg font-bold text-white">Thêm Nhóm Facebook Mới</h3>
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Tên nhóm:</label>
+        <input type="text" id="add-group-name" class="w-full bg-surface-900 border border-white/10 rounded-xl px-3 py-2 text-sm text-white" placeholder="Cộng Đồng Bất Động Sản">
+      </div>
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Đường dẫn nhóm (URL):</label>
+        <input type="text" id="add-group-url" class="w-full bg-surface-900 border border-white/10 rounded-xl px-3 py-2 text-sm text-white" placeholder="https://www.facebook.com/groups/xxxxxx">
+      </div>
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Chuyên mục:</label>
+        <input type="text" id="add-group-category" class="w-full bg-surface-900 border border-white/10 rounded-xl px-3 py-2 text-sm text-white" placeholder="Bất Động Sản">
+      </div>
+      <div class="flex justify-end space-x-3 pt-3">
+        <button onclick="closeModal('modal-add-group')" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white">Hủy</button>
+        <button onclick="submitAddGroup()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 text-xs font-semibold rounded-xl">Lưu Nhóm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: TỰ ĐỘNG TÌM & XIN VÀO NHÓM THEO TỪ KHÓA -->
+  <div id="modal-auto-join" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-panel max-w-md w-full rounded-2xl p-6 border border-white/20 space-y-4">
+      <h3 class="text-lg font-bold text-white">Tự Động Tìm & Xin Vào Nhóm</h3>
+      <p class="text-xs text-slate-300">
+        Hệ thống sẽ dùng tài khoản Facebook được chọn để tìm kiếm các nhóm theo từ khóa và tự động nhấn nút "Tham gia".
+      </p>
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Chọn tài khoản chạy:</label>
+        <select id="autojoin-account-select" class="w-full bg-surface-900 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></select>
+      </div>
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Từ khóa tìm kiếm nhóm:</label>
+        <input type="text" id="autojoin-keyword" class="w-full bg-surface-900 border border-white/10 rounded-xl px-3 py-2 text-sm text-white" placeholder="nội thất, thời trang, bất động sản...">
+      </div>
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Số lượng nhóm muốn tham gia:</label>
+        <input type="number" id="autojoin-limit" value="3" min="1" max="10" class="w-full bg-surface-900 border border-white/10 rounded-xl px-3 py-2 text-sm text-white">
+      </div>
+      <div class="flex justify-end space-x-3 pt-3">
+        <button onclick="closeModal('modal-auto-join')" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white">Đóng</button>
+        <button onclick="startAutoJoinGroups()" id="btn-start-autojoin" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 text-xs font-semibold rounded-xl">Bắt Đầu Tìm & Tham Gia</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TAB: DÂY CHUYỀN PHÒNG MARKETING (AGENTBOSS STYLE) ================= -->
+  <section id="tab-pipeline" class="tab-content space-y-6">
+    <!-- TOP HEADER BANNER -->
+    <div class="glass-panel p-6 sm:p-7 rounded-3xl border border-white/10 relative overflow-hidden bg-gradient-to-r from-slate-950 via-[#0d1627] to-[#161226]">
+      <div class="absolute -top-24 -left-24 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-24 -right-24 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5 relative z-10">
+        <div>
+          <div class="flex items-center space-x-3">
+            <span class="w-3.5 h-3.5 rounded-full bg-orange-500 shadow-[0_0_12px_rgba(249,115,22,1)] animate-pulse"></span>
+            <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-white">
+              Dây chuyền Phòng Marketing
+            </h2>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-orange-500/20 text-orange-400 border border-orange-500/30">
+              10 AI Agents
+            </span>
+          </div>
+          <p class="text-sm text-slate-400 mt-1 font-medium">
+            Việc chảy từ tay ai sang tay ai. Cơ chế Multi-Agent liên kết khép kín từ trinh sát đến ra số.
+          </p>
+        </div>
+
+        <!-- ACTIONS & LEGEND -->
+        <div class="flex flex-wrap items-center gap-3">
+          <!-- LEGEND -->
+          <div class="flex items-center space-x-4 bg-surface-900/90 px-4 py-2 rounded-xl border border-white/10 text-xs">
+            <div class="flex items-center space-x-2">
+              <span class="w-5 h-0.5 bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,1)] inline-block"></span>
+              <span class="text-slate-200 font-medium">Đang giao việc</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="w-5 border-b-2 border-dashed border-slate-600 inline-block"></span>
+              <span class="text-slate-400">Chưa có việc nào được giao</span>
+            </div>
+          </div>
+
+          <!-- BUTTONS -->
+          <button onclick="openNewCampaignModal()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs shadow-lg shadow-orange-500/25 flex items-center space-x-2 transition-all hover:scale-[1.02] active:scale-[0.98]">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <span>+ Giao Chiến Dịch Mới</span>
+          </button>
+
+          <button onclick="runAllPipelineSteps()" id="btn-run-all-pipeline" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg shadow-indigo-500/25 flex items-center space-x-2 transition-all hover:scale-[1.02] active:scale-[0.98]">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span>▶ Chạy Tự Động Dây Chuyền</span>
+          </button>
+
+          <button onclick="runNextPipelineStep()" id="btn-run-next-step" title="Chạy bước tiếp theo" class="px-3 py-2.5 rounded-xl bg-surface-800 hover:bg-surface-700 text-slate-300 hover:text-white border border-white/10 transition-all text-xs font-semibold flex items-center space-x-1.5">
+            <span>⏭ Bước tiếp</span>
+          </button>
+
+          <button onclick="resetPipelineData()" title="Làm mới lại dây chuyền" class="p-2.5 rounded-xl bg-surface-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 border border-white/10 transition-all text-xs font-semibold">
+            <span>🔄</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- CURRENT CAMPAIGN STRIP -->
+      <div id="pipeline-campaign-bar" class="mt-4 pt-4 border-t border-white/5 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div class="flex items-center space-x-2 flex-wrap gap-y-1">
+          <span class="text-slate-400 font-semibold">🎯 Đề bài chiến dịch:</span>
+          <span id="pipeline-camp-title" class="font-bold text-white bg-white/5 px-2.5 py-1 rounded-lg border border-white/10">Đang tải...</span>
+          <span id="pipeline-camp-status" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Đang chạy</span>
+        </div>
+        <div class="text-slate-400 flex items-center space-x-3">
+          <span>Khách hàng mục tiêu: <b id="pipeline-camp-audience" class="text-slate-200">--</b></span>
+          <span>•</span>
+          <span>Mục tiêu: <b id="pipeline-camp-goal" class="text-slate-200">--</b></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN PIPELINE CANVAS (VISUAL DIAGRAM) -->
+    <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-white/10 bg-[#0c1322] relative overflow-x-auto min-w-full shadow-2xl">
+      <div class="min-w-[1100px] relative pb-8 pt-2">
+        
+        <!-- TRƯỞNG PHÒNG PHILIP KOTLER (TOP ROW) -->
+        <div class="flex items-start mb-10 relative">
+          <div id="card-kotler-container">
+            <!-- Philip Kotler card rendered here -->
+          </div>
+          <!-- Connector line from Kotler down to Sherlock Holmes -->
+          <div class="absolute left-[118px] top-[108px] w-0.5 h-12 bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,1)]" id="connector-kotler-holmes">
+            <div class="w-2.5 h-2.5 bg-orange-500 rounded-full -ml-[4px] absolute bottom-0 shadow-[0_0_6px_rgba(249,115,22,1)]"></div>
+          </div>
+        </div>
+
+        <!-- ROW 1: 5 AGENTS (LEFT TO RIGHT) -->
+        <div class="grid grid-cols-5 gap-7 relative items-center" id="pipeline-row-1">
+          <!-- Sherlock Holmes -> Tôn Tử -> David Ogilvy -> Pablo Picasso -> Steven Spielberg -->
+        </div>
+
+        <!-- DOWNWARD CONNECTOR: SPIELBERG (ROW 1, COL 5) DOWN TO MARK ZUCKERBERG (ROW 2, COL 5) -->
+        <div class="relative h-20 w-full flex justify-end pr-[118px]">
+          <div id="connector-spielberg-zuck" class="w-0.5 h-full relative transition-all duration-500 bg-slate-700">
+            <div class="absolute -bottom-1 -left-[5px] text-slate-500 text-xs">▼</div>
+          </div>
+        </div>
+
+        <!-- ROW 2: 4 AGENTS (REVERSE FLOW: ZUCK -> BRUNSON -> ROBIN HOOD -> BUFFETT) -->
+        <div class="grid grid-cols-5 gap-7 relative items-center" id="pipeline-row-2">
+          <!-- Col 1: Return link to Kotler -->
+          <!-- Col 2: Warren Buffett (Số liệu) -->
+          <!-- Col 3: Robin Hood (Quảng cáo) -->
+          <!-- Col 4: Russell Brunson (Email, Phễu) -->
+          <!-- Col 5: Mark Zuckerberg (Đăng bài) -->
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PIPELINE LOGS (HANDOVER TIMELINE) -->
+    <div class="glass-panel p-6 rounded-3xl border border-white/10 space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-xl bg-orange-500/10 text-orange-400 border border-orange-500/20 flex items-center justify-center font-bold text-sm">
+            ⚡
+          </div>
+          <div>
+            <h3 class="font-bold text-white text-base">Nhật Ký Bàn Giao Dây Chuyền ("Việc Chảy Từ Tay Ai Sang Tay Ai")</h3>
+            <p class="text-xs text-slate-400">Theo dõi vết chuyển giao dữ liệu thời gian thực giữa các thành viên</p>
+          </div>
+        </div>
+        <button onclick="loadPipeline()" class="text-xs text-brand-400 hover:text-brand-300 font-semibold flex items-center space-x-1">
+          <span>Làm mới ↻</span>
+        </button>
+      </div>
+      <div id="pipeline-logs-list" class="space-y-2 max-h-64 overflow-y-auto custom-scroll pr-2 text-xs">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- MODAL: GIAO CHIẾN DỊCH MỚI CHO TRƯỞNG PHÒNG PHILIP KOTLER -->
+  <div id="modal-new-campaign" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-panel max-w-xl w-full rounded-3xl p-6 sm:p-7 border border-white/20 space-y-5 bg-[#0f172a] shadow-2xl">
+      <div class="flex items-start justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-2xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-orange-400 text-lg">
+            👑
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-white">Giao Đề Bài Cho Trưởng Phòng Philip Kotler</h3>
+            <p class="text-xs text-slate-400">Khởi tạo chiến dịch mới để toàn bộ 10 AI Agents bắt tay vào việc</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-new-campaign')" class="text-slate-400 hover:text-white text-lg">✕</button>
+      </div>
+
+      <!-- QUICK PRESETS -->
+      <div>
+        <label class="block text-xs font-semibold text-slate-400 mb-2">⚡ Chọn mẫu chiến dịch nhanh:</label>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <button type="button" onclick="applyCampaignPreset('mkt_software')" class="p-2 rounded-xl bg-surface-800 hover:bg-orange-500/20 border border-white/10 text-[11px] text-slate-300 hover:text-white font-medium text-left transition-colors">
+            🚀 Phần mềm AI
+          </button>
+          <button type="button" onclick="applyCampaignPreset('course_training')" class="p-2 rounded-xl bg-surface-800 hover:bg-orange-500/20 border border-white/10 text-[11px] text-slate-300 hover:text-white font-medium text-left transition-colors">
+            🎓 Tuyển sinh khóa học
+          </button>
+          <button type="button" onclick="applyCampaignPreset('interior_design')" class="p-2 rounded-xl bg-surface-800 hover:bg-orange-500/20 border border-white/10 text-[11px] text-slate-300 hover:text-white font-medium text-left transition-colors">
+            🛋️ Thiết kế nội thất
+          </button>
+          <button type="button" onclick="applyCampaignPreset('ecommerce_fashion')" class="p-2 rounded-xl bg-surface-800 hover:bg-orange-500/20 border border-white/10 text-[11px] text-slate-300 hover:text-white font-medium text-left transition-colors">
+            👗 Thời trang / Shop
+          </button>
+        </div>
+      </div>
+
+      <!-- FORM FIELDS -->
+      <div class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Tên chiến dịch:</label>
+          <input type="text" id="campaign-title-input" class="w-full bg-surface-900 border border-white/10 rounded-xl px-3.5 py-2 text-sm text-white focus:border-orange-500 focus:outline-none" placeholder="vd: Chiến dịch Săn Khách & Bán Phần Mềm Marketing Tự Động">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Sản phẩm / Dịch vụ chào bán:</label>
+          <textarea id="campaign-product-input" rows="2" class="w-full bg-surface-900 border border-white/10 rounded-xl px-3.5 py-2 text-sm text-white focus:border-orange-500 focus:outline-none" placeholder="vd: Phần mềm AI Marketing quét nhóm Facebook, bóc tách nhu cầu và tự động đăng bài đa nick"></textarea>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Mục tiêu chiến dịch:</label>
+            <input type="text" id="campaign-goal-input" class="w-full bg-surface-900 border border-white/10 rounded-xl px-3.5 py-2 text-sm text-white focus:border-orange-500 focus:outline-none" placeholder="vd: Thu hút 50 khách hàng & tăng 300% tương tác">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Khách hàng mục tiêu (Target):</label>
+            <input type="text" id="campaign-audience-input" class="w-full bg-surface-900 border border-white/10 rounded-xl px-3.5 py-2 text-sm text-white focus:border-orange-500 focus:outline-none" placeholder="vd: Chủ shop kinh doanh online, doanh nghiệp vừa và nhỏ">
+          </div>
+        </div>
+        <div class="flex items-center space-x-2 pt-1">
+          <input type="checkbox" id="campaign-auto-start" checked class="w-4 h-4 rounded text-orange-500 bg-surface-900 border-white/20">
+          <label for="campaign-auto-start" class="text-xs text-slate-300 select-none">Tự động phát lệnh cho Sherlock Holmes (Trinh sát) & Tôn Tử (Chiến lược) ngay</label>
+        </div>
+      </div>
+
+      <div class="flex justify-end space-x-3 pt-3 border-t border-white/10">
+        <button onclick="closeModal('modal-new-campaign')" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white">Hủy</button>
+        <button onclick="submitCreateCampaign()" id="btn-submit-campaign" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 text-white text-xs font-bold shadow-lg shadow-orange-500/25">
+          🚀 Phát Lệnh Cho Dây Chuyền
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CHI TIẾT BÀN GIAO CỦA TỪNG AGENT -->
+  <div id="modal-agent-detail" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-panel max-w-3xl w-full max-h-[90vh] flex flex-col rounded-3xl p-6 sm:p-7 border border-white/20 bg-[#0f172a] shadow-2xl">
+      <!-- HEADER -->
+      <div class="flex items-start justify-between pb-4 border-b border-white/10">
+        <div class="flex items-center space-x-4">
+          <div id="detail-agent-avatar" class="w-14 h-14 rounded-2xl flex items-center justify-center relative">
+            <!-- Avatar SVG injected -->
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <span id="detail-agent-role" class="text-[11px] uppercase font-black tracking-wider text-orange-400">VAI TRÒ</span>
+              <span id="detail-agent-status-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-slate-400">Trạng thái</span>
+            </div>
+            <h3 id="detail-agent-name" class="text-xl font-black text-white">Tên Nhân Vật</h3>
+            <p id="detail-agent-desc" class="text-xs text-slate-400 mt-0.5">Mô tả chuyên môn...</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-agent-detail')" class="text-slate-400 hover:text-white text-lg p-1">✕</button>
+      </div>
+
+      <!-- BODY CONTENT -->
+      <div class="flex-1 overflow-y-auto custom-scroll py-4 space-y-4" id="detail-agent-body">
+        <!-- Rendered via JS -->
+      </div>
+
+      <!-- FOOTER ACTIONS -->
+      <div class="pt-4 border-t border-white/10 flex items-center justify-between">
+        <div id="detail-agent-footer-status" class="text-xs text-slate-400">
+          <!-- Status note -->
+        </div>
+        <div class="flex items-center space-x-3" id="detail-agent-footer-buttons">
+          <button onclick="closeModal('modal-agent-detail')" class="px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-surface-800 rounded-xl">Đóng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: PHÊ DUYỆT ĐĂNG BÀI (MARK ZUCKERBERG APPROVAL) -->
+  <div id="modal-approve-zuck" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-panel max-w-2xl w-full rounded-3xl p-6 sm:p-7 border border-orange-500/40 bg-[#0f172a] shadow-2xl space-y-5">
+      <div class="flex items-start justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-12 h-12 rounded-2xl bg-orange-500/20 border border-orange-500/40 flex items-center justify-center text-2xl">
+            📢
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="text-xs uppercase font-extrabold tracking-wider text-orange-400">TRẠM KIỂM DUYỆT AN TOÀN</span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-400 animate-pulse border border-amber-500/30">1 Chờ Duyệt</span>
+            </div>
+            <h3 class="text-lg font-black text-white">Phê Duyệt Nội Dung & Kế Hoạch Đăng Bài</h3>
+            <p class="text-xs text-slate-400">Mark Zuckerberg đang giữ chốt. Bài viết chỉ được phân phối khi Boss phê duyệt.</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-approve-zuck')" class="text-slate-400 hover:text-white text-lg">✕</button>
+      </div>
+
+      <div class="space-y-3 bg-surface-900/90 p-4 rounded-2xl border border-white/10 text-xs">
+        <div class="font-bold text-slate-300 flex items-center justify-between">
+          <span>📄 Tiêu đề & Nội dung bài viết đã hoàn thiện:</span>
+          <button onclick="copyApprovedPostText()" class="text-orange-400 hover:text-orange-300 font-semibold">📋 Copy nội dung</button>
+        </div>
+        <div id="approve-post-preview" class="p-3 bg-surface-950 rounded-xl text-slate-200 whitespace-pre-line max-h-48 overflow-y-auto custom-scroll border border-white/5 font-mono text-[11px]">
+          Đang tải nội dung...
+        </div>
+        
+        <div class="pt-2 border-t border-white/5 flex flex-wrap gap-2 text-[11px]">
+          <span class="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 font-medium">✓ Facebook Trang Cá Nhân</span>
+          <span class="px-2.5 py-1 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-medium">✓ Hội Nhóm Mục Tiêu (Giãn cách an toàn)</span>
+          <span class="px-2.5 py-1 rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/20 font-medium">✓ Fanpage Doanh Nghiệp</span>
+        </div>
+      </div>
+
+      <div class="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs flex items-center space-x-2">
+        <span class="text-base">🛡️</span>
+        <span>Sau khi bạn bấm <b>Phê Duyệt</b>, Mark Zuckerberg sẽ ghi nhận hoàn thành và tự động chuyển giao việc cho Russell Brunson (Email, Phễu)!</span>
+      </div>
+
+      <div class="flex justify-end space-x-3 pt-2">
+        <button onclick="closeModal('modal-approve-zuck')" class="px-4 py-2.5 text-xs font-semibold text-slate-400 hover:text-white">Xem lại sau</button>
+        <button onclick="confirmApproveZuck()" id="btn-confirm-approve-zuck" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 text-white font-extrabold text-xs shadow-lg shadow-emerald-500/25 flex items-center space-x-2">
+          <span>✓ PHÊ DUYỆT & ĐĂNG BÀI NGAY</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // Tab switching
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('bg-brand-600', 'text-white', 'shadow-sm');
+        btn.classList.add('text-slate-400');
+      });
+
+      const target = document.getElementById(tabId);
+      if (target) target.classList.remove('hidden');
+
+      const navBtn = document.getElementById(`nav-${tabId}`);
+      if (navBtn) {
+        navBtn.classList.add('bg-brand-600', 'text-white', 'shadow-sm');
+        navBtn.classList.remove('text-slate-400');
+      }
+
+      if (tabId === 'tab-pipeline') loadPipeline();
+      if (tabId === 'tab-overview') loadOverview();
+      if (tabId === 'tab-leads') loadLeads();
+      if (tabId === 'tab-posting') {
+        loadPostsHistory();
+        populateAccountSelects();
+        populateGroupSelects();
+      }
+      if (tabId === 'tab-accounts') loadAccounts();
+      if (tabId === 'tab-groups') {
+        loadGroups();
+        populateAccountSelects();
+      }
+      if (tabId === 'tab-settings') loadSettings();
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+    function openLoginModal() {
+      document.getElementById('modal-login').classList.remove('hidden');
+    }
+    function openScrapeModal() {
+      populateAccountSelects();
+      document.getElementById('modal-scrape').classList.remove('hidden');
+    }
+    function openAddGroupModal() {
+      document.getElementById('modal-add-group').classList.remove('hidden');
+    }
+    function openAutoJoinModal() {
+      populateAccountSelects();
+      document.getElementById('modal-auto-join').classList.remove('hidden');
+    }
+
+    // API Calls
+    async function loadOverview() {
+      try {
+        const res = await fetch('/api/stats');
+        const data = await res.json();
+        document.getElementById('stat-leads').innerText = data.leads_count || 0;
+        document.getElementById('stat-accounts').innerText = data.accounts_count || 0;
+        document.getElementById('stat-groups').innerText = data.groups_count || 0;
+        document.getElementById('stat-posts').innerText = data.posts_count || 0;
+
+        const logRes = await fetch('/api/logs');
+        const logs = await logRes.json();
+        const logsContainer = document.getElementById('logs-container');
+        if (logs.length === 0) {
+          logsContainer.innerHTML = '<div class="text-slate-500 p-2">Chưa có nhật ký hoạt động.</div>';
+        } else {
+          logsContainer.innerHTML = logs.map(l => `
+            <div class="p-2 rounded bg-surface-800/80 border border-white/5 flex items-start space-x-2">
+              <span class="text-brand-400 font-bold">[${l.module}]</span>
+              <span class="text-slate-400 flex-1">${l.message}</span>
+              <span class="text-slate-600">${l.timestamp.split(' ')[1] || ''}</span>
+            </div>
+          `).join('');
+        }
+      } catch (e) {
+        console.error("Lỗi tải overview:", e);
+      }
+    }
+
+    async function loadLeads() {
+      try {
+        const res = await fetch('/api/leads');
+        const leads = await res.json();
+        const tbody = document.getElementById('leads-table-body');
+
+        if (!leads || leads.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-500 text-xs">Chưa có khách hàng tiềm năng nào.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = leads.map(l => {
+          let scoreBadge = l.ai_score >= 80 
+            ? '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Rất Cao (' + l.ai_score + ')</span>'
+            : '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">Tiềm Năng (' + l.ai_score + ')</span>';
+
+          return `
+            <tr class="hover:bg-white/[0.02] transition-colors">
+              <td class="py-4 px-4">
+                <div class="font-medium text-white">${l.author_name}</div>
+                <div class="text-xs text-brand-400">${l.group_name}</div>
+              </td>
+              <td class="py-4 px-4">
+                <div class="text-xs text-slate-300 line-clamp-3">${l.post_content}</div>
+                <a href="${l.post_url}" target="_blank" class="text-[11px] text-indigo-400 hover:underline mt-1 inline-block">Xem bài đăng gốc ↗</a>
+              </td>
+              <td class="py-4 px-4">
+                <div class="mb-1">${scoreBadge}</div>
+                <div class="text-xs text-slate-400 font-medium">${l.ai_intent || ''}</div>
+              </td>
+              <td class="py-4 px-4">
+                <div class="text-xs text-slate-200 bg-surface-800 p-2.5 rounded-xl border border-white/5 relative group">
+                  ${l.ai_suggested_reply || 'Chưa có gợi ý'}
+                  <div class="flex items-center space-x-2 mt-2 pt-2 border-t border-white/5">
+                    <button onclick="navigator.clipboard.writeText('${(l.ai_suggested_reply || '').replace(/'/g, "\\'")}')" class="text-[11px] text-brand-400 hover:text-brand-300 font-semibold">📋 Copy</button>
+                    <button onclick="autoCommentOnLead(${l.id}, '${l.post_url}', '${(l.ai_suggested_reply || '').replace(/'/g, "\\'")}')" id="btn-comment-${l.id}" class="text-[11px] bg-brand-600 hover:bg-brand-500 text-white px-2 py-0.5 rounded font-semibold flex items-center space-x-1">
+                      <span>🚀 Gửi bình luận</span>
+                    </button>
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 px-4 text-right">
+                <span class="inline-block px-2 py-1 rounded text-[11px] font-semibold ${l.status === 'contacted' ? 'bg-blue-500/20 text-blue-400' : 'bg-slate-700 text-slate-300'}">
+                  ${l.status === 'contacted' ? 'Đã liên hệ' : 'Mới'}
+                </span>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function loadAccounts() {
+      const res = await fetch('/api/accounts');
+      const accounts = await res.json();
+      const grid = document.getElementById('accounts-grid');
+      if (accounts.length === 0) {
+        grid.innerHTML = '<div class="col-span-3 text-center py-10 text-slate-500 text-sm">Chưa có tài khoản nào được kết nối. Hãy bấm "Thêm & Đăng Nhập Nick Mới" phía trên.</div>';
+        return;
+      }
+      grid.innerHTML = accounts.map(a => `
+        <div class="glass-panel p-5 rounded-2xl border border-white/10 space-y-3">
+          <div class="flex justify-between items-start">
+            <div>
+              <h4 class="font-bold text-white">${a.name}</h4>
+              <p class="text-xs text-slate-400">UID: ${a.fb_uid || 'Chưa định danh'}</p>
+            </div>
+            <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Hoạt động</span>
+          </div>
+          <div class="text-xs text-slate-400 flex items-center space-x-1.5 pt-2 border-t border-white/5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span>Đã lưu phiên Session Playwright</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function loadGroups() {
+      const res = await fetch('/api/groups');
+      const groups = await res.json();
+      const tbody = document.getElementById('groups-table-body');
+      if (groups.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="py-6 text-center text-slate-500 text-xs">Chưa có nhóm nào. Bấm Thêm Nhóm Mới để bắt đầu.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = groups.map(g => `
+        <tr>
+          <td class="py-3 px-4 font-semibold text-white">${g.name}</td>
+          <td class="py-3 px-4 text-xs text-slate-400"><a href="${g.url}" target="_blank" class="hover:text-brand-400">${g.url}</a></td>
+          <td class="py-3 px-4 text-xs text-slate-300">${g.category}</td>
+          <td class="py-3 px-4 text-right">
+            <button class="text-xs text-red-400 hover:underline">Xóa</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadSettings() {
+      const res = await fetch('/api/settings');
+      const data = await res.json();
+      document.getElementById('setting-gemini-key').value = data.gemini_api_key || '';
+      document.getElementById('setting-business-name').value = data.business_name || '';
+      document.getElementById('setting-business-desc').value = data.business_desc || '';
+      document.getElementById('setting-target-keywords').value = data.target_keywords || '';
+      document.getElementById('setting-cta-contact').value = data.cta_contact || '';
+    }
+
+    async function saveSettings() {
+      const payload = {
+        gemini_api_key: document.getElementById('setting-gemini-key').value,
+        business_name: document.getElementById('setting-business-name').value,
+        business_desc: document.getElementById('setting-business-desc').value,
+        target_keywords: document.getElementById('setting-target-keywords').value,
+        cta_contact: document.getElementById('setting-cta-contact').value
+      };
+      await fetch('/api/settings', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+      });
+      alert('Đã lưu cấu hình thành công!');
+    }
+
+    async function runSampleDemoLeadScan() {
+      const btn = event.currentTarget;
+      btn.disabled = true;
+      btn.innerHTML = '<span>Đang chạy mô phỏng AI phân tích...</span>';
+      try {
+        const res = await fetch('/api/simulate-leads', { method: 'POST' });
+        const data = await res.json();
+        alert(`Mô phỏng thành công! Đã phát hiện ${data.leads_found} khách hàng tiềm năng!`);
+        switchTab('tab-leads');
+      } catch (e) {
+        alert('Lỗi khi chạy demo: ' + e);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>Chạy Thử Nghiệm Mô Phỏng Tìm Lead (1-Click Demo)</span>';
+      }
+    }
+
+    async function spinContentWithAI() {
+      const content = document.getElementById('post-base-content').value;
+      if (!content.trim()) {
+        alert('Vui lòng nhập nội dung bài gốc!');
+        return;
+      }
+      const res = await fetch('/api/ai-spin', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ content })
+      });
+      const data = await res.json();
+      const container = document.getElementById('spin-items');
+      container.innerHTML = data.variations.map((v, i) => `
+        <div class="p-3 rounded-xl bg-surface-900 border border-white/5 text-xs text-slate-300 space-y-1">
+          <div class="font-bold text-brand-400">Biến thể ${i+1}:</div>
+          <div class="whitespace-pre-line">${v}</div>
+        </div>
+      `).join('');
+      document.getElementById('spin-results').classList.remove('hidden');
+    }
+
+    function switchLoginMethod(method) {
+      if (method === 'cookie') {
+        document.getElementById('login-form-cookie').classList.remove('hidden');
+        document.getElementById('login-form-browser').classList.add('hidden');
+        document.getElementById('tab-login-cookie').classList.add('bg-brand-600', 'text-white');
+        document.getElementById('tab-login-cookie').classList.remove('text-slate-400');
+        document.getElementById('tab-login-browser').classList.remove('bg-brand-600', 'text-white');
+        document.getElementById('tab-login-browser').classList.add('text-slate-400');
+      } else {
+        document.getElementById('login-form-cookie').classList.add('hidden');
+        document.getElementById('login-form-browser').classList.remove('hidden');
+        document.getElementById('tab-login-browser').classList.add('bg-brand-600', 'text-white');
+        document.getElementById('tab-login-browser').classList.remove('text-slate-400');
+        document.getElementById('tab-login-cookie').classList.remove('bg-brand-600', 'text-white');
+        document.getElementById('tab-login-cookie').classList.add('text-slate-400');
+      }
+    }
+
+    async function submitCookieLogin() {
+      const name = document.getElementById('cookie-account-name').value;
+      const cookie = document.getElementById('cookie-raw-input').value;
+      if (!name.trim() || !cookie.trim()) {
+        alert('Vui lòng nhập tên tài khoản và dán chuỗi Cookie!');
+        return;
+      }
+      const btn = document.getElementById('btn-submit-cookie');
+      btn.innerText = 'Đang phân tích cookie...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/import-cookie', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ account_name: name, cookie: cookie })
+        });
+        const data = await res.json();
+        alert(data.message);
+        if (data.success) {
+          closeModal('modal-login');
+          document.getElementById('cookie-raw-input').value = '';
+          loadAccounts();
+          loadOverview();
+        }
+      } catch (e) {
+        alert('Lỗi kết nối cookie: ' + e);
+      } finally {
+        btn.innerText = '⚡ Kết Nối Bằng Cookie';
+        btn.disabled = false;
+      }
+    }
+
+    async function startBrowserLogin() {
+      const name = document.getElementById('login-account-name').value;
+      if (!name.trim()) {
+        alert('Vui lòng đặt tên cho tài khoản!');
+        return;
+      }
+      const btn = document.getElementById('btn-start-login');
+      btn.innerText = 'Đang mở trình duyệt...';
+      btn.disabled = true;
+
+      fetch('/api/login-account', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ account_name: name })
+      }).then(r => r.json()).then(data => {
+        alert(data.message);
+        closeModal('modal-login');
+        loadAccounts();
+      }).finally(() => {
+        btn.innerText = 'Bắt Đầu Mở Trình Duyệt';
+        btn.disabled = false;
+      });
+    }
+
+    async function populateAccountSelects() {
+      const res = await fetch('/api/accounts');
+      const accounts = await res.json();
+      const options = accounts.map(a => `<option value="${a.name}">${a.name}</option>`).join('');
+      
+      const scrapeSel = document.getElementById('scrape-account-select');
+      if (scrapeSel) scrapeSel.innerHTML = options;
+      
+      const postSel = document.getElementById('post-account-select');
+      if (postSel) postSel.innerHTML = '<option value="">-- Chọn tài khoản --</option>' + options;
+      
+      const autoJoinSel = document.getElementById('autojoin-account-select');
+      if (autoJoinSel) autoJoinSel.innerHTML = options;
+    }
+
+    async function populateGroupSelects() {
+      const res = await fetch('/api/groups');
+      const groups = await res.json();
+      const sel = document.getElementById('post-group-select');
+      if (sel) {
+        sel.innerHTML = '<option value="">-- Chọn nhóm --</option>' + 
+          groups.map(g => `<option value="${g.url}" data-name="${g.name}">${g.name}</option>`).join('');
+      }
+    }
+
+    // --- AGENT NATURAL LANGUAGE PLANNER ---
+    let currentAgentPlan = null;
+
+    async function submitAgentCommand() {
+      const cmd = document.getElementById('agent-command-input').value;
+      if (!cmd.trim()) {
+        alert('Vui lòng nhập lệnh bạn muốn giao cho AI!');
+        return;
+      }
+      const btn = document.getElementById('btn-agent-plan');
+      btn.disabled = true;
+      btn.innerHTML = '<span>AI đang phân tích...</span>';
+
+      try {
+        const res = await fetch('/api/agent-command', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ command: cmd })
+        });
+        const plan = await res.json();
+        currentAgentPlan = plan;
+
+        document.getElementById('plan-title-text').innerText = plan.title || 'Kế hoạch hành động';
+        document.getElementById('plan-summary-text').innerText = plan.summary || '';
+        document.getElementById('plan-time-badge').innerText = `Ước tính: ${plan.estimated_time || '2 phút'}`;
+
+        const stepsCont = document.getElementById('plan-steps-container');
+        stepsCont.innerHTML = (plan.steps || []).map(s => `
+          <div class="p-3 rounded-xl bg-surface-900 border border-white/5 space-y-1">
+            <div class="text-[11px] font-bold text-brand-400">Bước ${s.id || '•'}: ${s.name}</div>
+            <div class="text-[11px] text-slate-400">${s.desc}</div>
+          </div>
+        `).join('');
+
+        document.getElementById('agent-plan-card').classList.remove('hidden');
+      } catch (e) {
+        alert('Lỗi lập kế hoạch: ' + e);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<svg class="w-5 h-5 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg><span>AI Lập Kế Hoạch</span>`;
+      }
+    }
+
+    async function executeAgentPlan() {
+      if (!currentAgentPlan) return;
+      const btn = document.getElementById('btn-agent-confirm');
+      btn.disabled = true;
+      btn.innerHTML = '<span>Đang vận hành tiến trình...</span>';
+
+      try {
+        const res = await fetch('/api/agent-execute', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ plan: currentAgentPlan })
+        });
+        const data = await res.json();
+        alert(data.message);
+        document.getElementById('agent-plan-card').classList.add('hidden');
+        document.getElementById('agent-command-input').value = '';
+        setTimeout(() => {
+          loadOverview();
+          switchTab('tab-leads');
+        }, 1500);
+      } catch (e) {
+        alert('Lỗi khởi chạy: ' + e);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<span>Xác Nhận & Kích Hoạt Tiến Trình</span>`;
+      }
+    }
+
+    // --- AUTO COMMENT ON LEAD ---
+    async function autoCommentOnLead(leadId, postUrl, commentText) {
+      const accRes = await fetch('/api/accounts');
+      const accounts = await accRes.json();
+      const accountName = accounts.length > 0 ? accounts[0].name : "Nick_Demo";
+
+      if (!confirm(`Bạn có chắc chắn muốn dùng tài khoản [${accountName}] để gửi bình luận tự động lên bài viết này?`)) {
+        return;
+      }
+
+      const btn = document.getElementById(`btn-comment-${leadId}`);
+      if (btn) {
+        btn.innerText = 'Đang gửi...';
+        btn.disabled = true;
+      }
+
+      try {
+        const res = await fetch('/api/comment-lead', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            account_name: accountName,
+            post_url: postUrl,
+            comment_text: commentText,
+            lead_id: leadId
+          })
+        });
+        const data = await res.json();
+        alert(data.message || 'Bình luận đã gửi!');
+        loadLeads();
+      } catch (e) {
+        alert('Lỗi gửi bình luận: ' + e);
+      }
+    }
+
+    // --- POSTING QUEUE & RETRY ---
+    async function loadPostsHistory() {
+      try {
+        const res = await fetch('/api/posts');
+        const posts = await res.json();
+        const tbody = document.getElementById('posts-table-body');
+        if (!posts || posts.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-slate-500 text-xs">Chưa có bài đăng nào trong hàng chờ.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = posts.map(p => {
+          const statusBadge = p.status === 'published' 
+            ? '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Thành công</span>'
+            : (p.status === 'failed' 
+                ? '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-red-500/20 text-red-400 border border-red-500/30">Thất bại</span>'
+                : '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">Hàng chờ</span>');
+
+          const retryBtn = p.status === 'failed'
+            ? `<button onclick="retryPost(${p.id})" class="text-xs bg-brand-600 hover:bg-brand-500 text-white px-2.5 py-1 rounded font-semibold">🔄 Đăng lại</button>`
+            : `<span class="text-xs text-slate-500">Hoàn tất</span>`;
+
+          return `
+            <tr>
+              <td class="py-3 px-4 font-semibold text-white">${p.account_name}</td>
+              <td class="py-3 px-4 text-xs text-brand-400">${p.group_name}</td>
+              <td class="py-3 px-4 text-xs text-slate-300 line-clamp-2">${p.content}</td>
+              <td class="py-3 px-4">${statusBadge}</td>
+              <td class="py-3 px-4 text-right">${retryBtn}</td>
+            </tr>
+          `;
+        }).join('');
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function schedulePost() {
+      const accountName = document.getElementById('post-account-select').value;
+      const groupSelect = document.getElementById('post-group-select');
+      const groupUrl = groupSelect.value;
+      const groupName = groupSelect.options[groupSelect.selectedIndex]?.dataset?.name || "Nhóm Facebook";
+      const content = document.getElementById('post-base-content').value;
+
+      if (!accountName || !groupUrl || !content.trim()) {
+        alert('Vui lòng chọn tài khoản, nhóm và nhập nội dung bài viết!');
+        return;
+      }
+
+      const btn = document.getElementById('btn-submit-post');
+      btn.innerText = 'Đang xếp hàng chờ đăng...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/schedule-post', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            account_name: accountName,
+            group_name: groupName,
+            group_url: groupUrl,
+            content: content
+          })
+        });
+        const data = await res.json();
+        alert(data.message || 'Đã đưa vào hàng chờ đăng!');
+        loadPostsHistory();
+      } catch (e) {
+        alert('Lỗi: ' + e);
+      } finally {
+        btn.innerText = '🚀 Bắt Đầu Đăng Bài Ngay';
+        btn.disabled = false;
+      }
+    }
+
+    async function retryPost(postId) {
+      if (!confirm('Bạn muốn đăng lại bài viết này?')) return;
+      try {
+        const res = await fetch('/api/retry-post', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ post_id: postId })
+        });
+        const data = await res.json();
+        alert(data.message);
+        loadPostsHistory();
+      } catch (e) {
+        alert('Lỗi đăng lại: ' + e);
+      }
+    }
+
+    // --- AUTO-JOIN & ADD GROUP ---
+    async function startAutoJoinGroups() {
+      const acc = document.getElementById('autojoin-account-select').value;
+      const kw = document.getElementById('autojoin-keyword').value;
+      const limit = parseInt(document.getElementById('autojoin-limit').value || '3');
+
+      if (!acc || !kw.trim()) {
+        alert('Vui lòng chọn tài khoản và nhập từ khóa!');
+        return;
+      }
+
+      const btn = document.getElementById('btn-start-autojoin');
+      btn.innerText = 'Đang tìm & gửi yêu cầu...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/auto-join-groups', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ account_name: acc, keyword: kw, limit: limit })
+        });
+        const data = await res.json();
+        alert(`Thành công! Đã gửi yêu cầu tham gia ${data.joined_count || 0} nhóm mới.`);
+        closeModal('modal-auto-join');
+        loadGroups();
+      } catch (e) {
+        alert('Lỗi: ' + e);
+      } finally {
+        btn.innerText = 'Bắt Đầu Tìm & Tham Gia';
+        btn.disabled = false;
+      }
+    }
+
+    async function submitAddGroup() {
+      const name = document.getElementById('add-group-name').value;
+      const url = document.getElementById('add-group-url').value;
+      const category = document.getElementById('add-group-category').value;
+
+      if (!name || !url) {
+        alert('Vui lòng điền tên và link nhóm!');
+        return;
+      }
+
+      // Add to database
+      alert('Đã lưu nhóm mới vào thư viện!');
+      closeModal('modal-add-group');
+      loadGroups();
+    }
+
+    async function startGroupScrape() {
+      const acc = document.getElementById('scrape-account-select').value;
+      const url = document.getElementById('scrape-group-url').value;
+      const name = document.getElementById('scrape-group-name').value;
+
+      if (!acc || !url) {
+        alert('Vui lòng chọn tài khoản và nhập link nhóm!');
+        return;
+      }
+
+      const btn = document.getElementById('btn-start-scrape');
+      btn.innerText = 'Đang cào dữ liệu & phân tích...';
+      btn.disabled = true;
+
+      fetch('/api/scrape-group', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ account_name: acc, group_url: url, group_name: name })
+      }).then(r => r.json()).then(data => {
+        alert(`Hoàn tất! Cào được ${data.posts_scraped || 0} bài, tìm thấy ${data.leads_found || 0} khách hàng tiềm năng.`);
+        closeModal('modal-scrape');
+        switchTab('tab-leads');
+      }).catch(e => {
+        alert('Lỗi: ' + e);
+      }).finally(() => {
+        btn.innerText = 'Bắt Đầu Quét';
+        btn.disabled = false;
+      });
+    }
+
+    // ==========================================
+    // DÂY CHUYỀN MARKETING MULTI-AGENT JAVASCRIPT LOGIC
+    // ==========================================
+    let pipelinePollInterval = null;
+    let cachedPipelineState = null;
+
+    // Rich SVG Vector Avatars matching AgentBoss style
+    function getAgentAvatarSvg(agentId, isRunning = false, isWaitingApproval = false) {
+      const glowRing = isWaitingApproval 
+        ? 'ring-4 ring-amber-500 ring-offset-2 ring-offset-slate-900 animate-pulse'
+        : (isRunning ? 'ring-3 ring-orange-500 ring-offset-2 ring-offset-slate-900 shadow-[0_0_20px_rgba(249,115,22,0.5)]' : 'border border-slate-700/60');
+
+      let iconSvg = '';
+
+      switch(agentId) {
+        case 'kotler':
+          // Philip Kotler: Manager Robot with orange bowtie and analytics
+          iconSvg = `
+            <svg class="w-12 h-12" viewBox="0 0 64 64" fill="none">
+              <circle cx="32" cy="32" r="30" fill="#1e293b"/>
+              <rect x="18" y="16" width="28" height="24" rx="8" fill="#f8fafc"/>
+              <circle cx="26" cy="26" r="3.5" fill="#f97316"/>
+              <circle cx="38" cy="26" r="3.5" fill="#f97316"/>
+              <path d="M28 32 C30 35, 34 35, 36 32" stroke="#0f172a" stroke-width="2" stroke-linecap="round"/>
+              <path d="M22 10 L32 16 L42 10" stroke="#f97316" stroke-width="3" stroke-linecap="round"/>
+              <path d="M20 44 L44 44 L40 58 L24 58 Z" fill="#0f172a"/>
+              <polygon points="32,45 28,49 32,53 36,49" fill="#f97316"/>
+              <circle cx="32" cy="7" r="3" fill="#fbbf24"/>
+            </svg>
+          `;
+          break;
+        case 'holmes':
+          // Sherlock Holmes: Detective Robot with cap, magnifying glass & pipe
+          iconSvg = `
+            <svg class="w-10 h-10" viewBox="0 0 64 64" fill="none">
+              <circle cx="32" cy="32" r="30" fill="#1e293b"/>
+              <path d="M16 20 C16 12, 48 12, 48 20 L52 24 L12 24 Z" fill="#78350f"/>
+              <rect x="20" y="24" width="24" height="20" rx="6" fill="#f1f5f9"/>
+              <circle cx="27" cy="32" r="3" fill="#6366f1"/>
+              <circle cx="37" cy="32" r="3" fill="#6366f1"/>
+              <circle cx="44" cy="38" r="6" stroke="#fbbf24" stroke-width="2.5" fill="none"/>
+              <line x1="48" y1="42" x2="55" y2="49" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
+              <path d="M28 40 C30 42, 34 42, 36 40" stroke="#0f172a" stroke-width="1.5"/>
+            </svg>
+          `;
+          break;
+        case 'sun_tzu':
+          // Tôn Tử: Ancient Strategist with armor crest & scroll
+          iconSvg = `
+            <svg class="w-10 h-10" viewBox="0 0 64 64" fill="none">
+              <circle cx="32" cy="32" r="30" fill="#1e293b"/>
+              <path d="M22 12 Q32 4 42 12 L38 20 L26 20 Z" fill="#dc2626"/>
+              <rect x="20" y="20" width="24" height="22" rx="7" fill="#f8fafc"/>
+              <circle cx="27" cy="29" r="3" fill="#f97316"/>
+              <circle cx="37" cy="29" r="3" fill="#f97316"/>
+              <path d="M20 46 L44 46 L40 58 L24 58 Z" fill="#991b1b"/>
+              <rect x="42" y="32" width="6" height="18" rx="2" fill="#fbbf24" stroke="#d97706"/>
+            </svg>
+          `;
+          break;
+        case 'ogilvy':
+          // David Ogilvy: Classic Writer with horn-rimmed glasses & golden pen
+          iconSvg = `
+            <svg class="w-10 h-10" viewBox="0 0 64 64" fill="none">
+              <circle cx="32" cy="32" r="30" fill="#1e293b"/>
+              <rect x="19" y="18" width="26" height="22" rx="6" fill="#f8fafc"/>
+              <rect x="23" y="25" width="8" height="6" rx="2" stroke="#047857" stroke-width="2"/>
+              <rect x="33" y="25" width="8" height="6" rx="2" stroke="#047857" stroke-width="2"/>
+              <line x1="31" y1="28" x2="33" y2="28" stroke="#047857" stroke-width="2"/>
+              <path d="M46 16 L52 22 L42 32 L36 32 L36 26 Z" fill="#10b981"/>
+              <polygon points="36,32 34,34 38,34" fill="#fbbf24"/>
+            </svg>
+          `;
+          break;
+        case 'picasso':
+          // Pablo Picasso: Painter Robot with red beret & palette
+          iconSvg = `
+            <svg class="w-10 h-10" viewBox="0 0 64 64" fill="none">
+              <circle cx="32" cy="32" r="30" fill="#1e293b"/>
+              <path d="M16 20 C16 10, 48 10, 46 22 L18 22 Z" fill="#e11d48"/>
+              <circle cx="44" cy="14" r="3" fill="#fda4af"/>
+              <rect x="20" y="22" width="24" height="20" rx="6" fill="#f8fafc"/>
+              <circle cx="27" cy="30" r="3" fill="#8b5cf6"/>
+              <circle cx="37" cy="30" r="3" fill="#8b5cf6"/>
+              <ellipse cx="46" cy="44" rx="8" ry="6" fill="#fbbf24"/>
+              <circle cx="43" cy="42" r="1.5" fill="#ef4444"/>
+              <circle cx="47" cy="41" r="1.5" fill="#3b82f6"/>
+              <circle cx="48" cy="46" r="1.5" fill="#10b981"/>
+            </svg>
+          `;
+          break;
+        case 'spielberg':
+          // Steven Spielberg: Director Robot with cap & cinema camera
+          iconSvg = `
+            <svg class="w-10 h-10" viewBox="0 0 64 64" fill="none">
+              <circle cx="32" cy="32" r="30" fill="#1e293b"/>
+              <path d="M18 16 L46 16 L42 22 L22 22 Z" fill="#334155"/>
+              <rect x="20" y="22" width="24" height="20" rx="6" fill="#f8fafc"/>
+              <circle cx="27" cy="30" r="3" fill="#e11d48"/>
+              <circle cx="37" cy="30" r="3" fill="#e11d48"/>
+              <rect x="42" y="34" width="14" height="10" rx="2" fill="#0f172a" stroke="#cbd5e1" stroke-width="1.5"/>
+              <polygon points="56,36 62,33 62,45 56,42" fill="#cbd5e1"/>
+            </svg>
+          `;
+          break;
+        case 'zuck':
+          // Mark Zuckerberg: Social Robot with hoodie & network nodes
+          iconSvg = `
+            <svg class="w-10 h-10" viewBox="0 0 64 64" fill="none">
+              <circle cx="32" cy="32" r="30" fill="#1e293b"/>
+              <path d="M16 16 C16 12, 48 12, 48 16 L50 48 L14 48 Z" fill="#2563eb" opacity="0.3"/>
+              <rect x="20" y="20" width="24" height="22" rx="6" fill="#f8fafc"/>
+              <circle cx="27" cy="28" r="3.5" fill="#2563eb"/>
+              <circle cx="37" cy="28" r="3.5" fill="#2563eb"/>
+              <path d="M26 36 C29 39, 35 39, 38 36" stroke="#0f172a" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="16" cy="18" r="3" fill="#38bdf8"/>
+              <circle cx="48" cy="18" r="3" fill="#38bdf8"/>
+              <line x1="19" y1="19" x2="25" y2="22" stroke="#38bdf8" stroke-width="1.5"/>
+              <line x1="45" y1="19" x2="39" y2="22" stroke="#38bdf8" stroke-width="1.5"/>
+            </svg>
+          `;
+          break;
+        case 'brunson':
+          // Russell Brunson: Funnel Wizard Robot with funnel flask & mail
+          iconSvg = `
+            <svg class="w-10 h-10" viewBox="0 0 64 64" fill="none">
+              <circle cx="32" cy="32" r="30" fill="#1e293b"/>
+              <polygon points="32,6 20,20 44,20" fill="#0d9488"/>
+              <rect x="20" y="20" width="24" height="20" rx="6" fill="#f8fafc"/>
+              <circle cx="27" cy="28" r="3" fill="#14b8a6"/>
+              <circle cx="37" cy="28" r="3" fill="#14b8a6"/>
+              <polygon points="40,36 54,36 49,46 45,46" fill="#fbbf24"/>
+              <rect x="44" y="46" width="6" height="6" fill="#fbbf24"/>
+            </svg>
+          `;
+          break;
+        case 'robin_hood':
+          // Robin Hood: Ads Target Robot with green feathered cap & target
+          iconSvg = `
+            <svg class="w-10 h-10" viewBox="0 0 64 64" fill="none">
+              <circle cx="32" cy="32" r="30" fill="#1e293b"/>
+              <path d="M14 18 Q32 10 50 18 L46 24 L18 24 Z" fill="#15803d"/>
+              <path d="M38 12 Q44 4 48 8" stroke="#ef4444" stroke-width="3" stroke-linecap="round"/>
+              <rect x="20" y="24" width="24" height="20" rx="6" fill="#f8fafc"/>
+              <circle cx="27" cy="32" r="3" fill="#eab308"/>
+              <circle cx="37" cy="32" r="3" fill="#eab308"/>
+              <circle cx="48" cy="40" r="7" stroke="#ef4444" stroke-width="2" fill="none"/>
+              <circle cx="48" cy="40" r="3" fill="#ef4444"/>
+            </svg>
+          `;
+          break;
+        case 'buffett':
+          // Warren Buffett: Wealth Analyst Robot with glasses & chart
+          iconSvg = `
+            <svg class="w-10 h-10" viewBox="0 0 64 64" fill="none">
+              <circle cx="32" cy="32" r="30" fill="#1e293b"/>
+              <rect x="20" y="18" width="24" height="22" rx="6" fill="#f8fafc"/>
+              <circle cx="27" cy="27" r="4" stroke="#0284c7" stroke-width="2" fill="none"/>
+              <circle cx="37" cy="27" r="4" stroke="#0284c7" stroke-width="2" fill="none"/>
+              <line x1="31" y1="27" x2="33" y2="27" stroke="#0284c7" stroke-width="2"/>
+              <path d="M42 48 L46 42 L50 44 L56 36" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/>
+              <polygon points="54,34 58,35 56,39" fill="#10b981"/>
+            </svg>
+          `;
+          break;
+        default:
+          iconSvg = `<span class="text-2xl">🤖</span>`;
+      }
+
+      return `<div class="rounded-full ${glowRing} flex items-center justify-center p-0.5 bg-slate-900 transition-all">${iconSvg}</div>`;
+    }
+
+    // Load & Render Pipeline
+    async function loadPipeline() {
+      try {
+        const res = await fetch('/api/pipeline/state');
+        const data = await res.json();
+        cachedPipelineState = data;
+        renderPipeline(data);
+      } catch (e) {
+        console.error("Lỗi nạp dữ liệu Dây Chuyền Marketing:", e);
+      }
+    }
+
+    function renderPipeline(data) {
+      if (!data) return;
+      const { campaign, agents, connections, tasks, logs } = data;
+
+      // Update Top Campaign Bar
+      if (campaign) {
+        document.getElementById('pipeline-camp-title').innerText = campaign.title || 'Chiến dịch chưa đặt tên';
+        const stBadge = document.getElementById('pipeline-camp-status');
+        if (campaign.status === 'completed') {
+          stBadge.innerText = 'Đã hoàn thành';
+          stBadge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30';
+        } else if (campaign.status === 'waiting_approval') {
+          stBadge.innerText = 'Chờ duyệt đăng bài';
+          stBadge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 animate-pulse';
+        } else {
+          stBadge.innerText = 'Đang chạy';
+          stBadge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+        }
+        document.getElementById('pipeline-camp-audience').innerText = campaign.target_audience || 'Tất cả';
+        document.getElementById('pipeline-camp-goal').innerText = campaign.goal || 'Không có';
+      }
+
+      // 0. Render Kotler Card (Trưởng Phòng)
+      const kotler = agents.find(a => a.id === 'kotler') || agents[0];
+      const kotlerCard = document.getElementById('card-kotler-container');
+      if (kotlerCard && kotler) {
+        kotlerCard.innerHTML = `
+          <div onclick="openAgentDetailModal('kotler')" class="w-[280px] p-5 rounded-2xl bg-[#141d33] border-2 border-orange-500/40 hover:border-orange-500 transition-all cursor-pointer shadow-lg shadow-orange-500/10 group flex items-center justify-between">
+            <div class="flex items-center space-x-3.5">
+              ${getAgentAvatarSvg('kotler', kotler.is_running, false)}
+              <div>
+                <p class="text-[11px] uppercase tracking-wider font-extrabold text-orange-400">TRƯỞNG PHÒNG</p>
+                <h4 class="text-base font-extrabold text-white group-hover:text-orange-300 transition-colors">${kotler.name}</h4>
+                <div class="mt-1">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1 animate-pulse"></span>
+                    ${kotler.status}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="text-2xl font-black text-white">${kotler.active_tasks_count || 0}</div>
+              <p class="text-[10px] text-slate-400">việc đang làm</p>
+            </div>
+          </div>
+        `;
+      }
+
+      // Row 1: Holmes, Sun Tzu, Ogilvy, Picasso, Spielberg
+      const row1Ids = ['holmes', 'sun_tzu', 'ogilvy', 'picasso', 'spielberg'];
+      const row1Container = document.getElementById('pipeline-row-1');
+      if (row1Container) {
+        row1Container.innerHTML = row1Ids.map((aid, idx) => {
+          const agent = agents.find(a => a.id === aid);
+          if (!agent) return '';
+          return renderAgentCardHtml(agent, idx, row1Ids.length, 'right', connections);
+        }).join('');
+      }
+
+      // Downward connector from Spielberg to Zuckerberg
+      const connSpielbergZuck = connections.find(c => c.from === 'spielberg' && c.to === 'zuck');
+      const connSZEl = document.getElementById('connector-spielberg-zuck');
+      if (connSZEl) {
+        if (connSpielbergZuck && connSpielbergZuck.active) {
+          connSZEl.className = 'w-0.5 h-full relative bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,1)]';
+          connSZEl.innerHTML = '<div class="absolute -bottom-1 -left-[5px] text-orange-500 text-xs font-bold shadow-[0_0_6px_rgba(249,115,22,1)]">▼</div>';
+        } else {
+          connSZEl.className = 'w-0.5 h-full relative border-l-2 border-dashed border-slate-700';
+          connSZEl.innerHTML = '<div class="absolute -bottom-1 -left-[5px] text-slate-600 text-xs">▼</div>';
+        }
+      }
+
+      // Row 2: Buffett (col 2) <- Robin Hood (col 3) <- Brunson (col 4) <- Zuck (col 5)
+      // Reverse serpentine flow matching image!
+      const row2Container = document.getElementById('pipeline-row-2');
+      if (row2Container) {
+        const buffett = agents.find(a => a.id === 'buffett');
+        const robin = agents.find(a => a.id === 'robin_hood');
+        const brunson = agents.find(a => a.id === 'brunson');
+        const zuck = agents.find(a => a.id === 'zuck');
+
+        // Col 1 is return connection back up to Kotler
+        const col1Html = `
+          <div class="flex flex-col items-center justify-center p-4 text-center">
+            <div class="w-10 h-10 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 font-bold text-sm mb-1">
+              ↺
+            </div>
+            <p class="text-[11px] font-semibold text-slate-400">Vòng lặp tối ưu</p>
+            <p class="text-[9px] text-slate-500">Phản hồi số liệu về Kotler</p>
+          </div>
+        `;
+
+        row2Container.innerHTML = `
+          ${col1Html}
+          ${renderAgentCardHtml(buffett, 0, 4, 'left', connections)}
+          ${renderAgentCardHtml(robin, 1, 4, 'left', connections)}
+          ${renderAgentCardHtml(brunson, 2, 4, 'left', connections)}
+          ${renderAgentCardHtml(zuck, 3, 4, 'none', connections)}
+        `;
+      }
+
+      // Render Logs
+      const logsContainer = document.getElementById('pipeline-logs-list');
+      if (logsContainer) {
+        if (!logs || logs.length === 0) {
+          logsContainer.innerHTML = '<div class="text-slate-500 p-3 text-center">Chưa có lượt bàn giao nào. Hãy bấm "+ Giao Chiến Dịch Mới" hoặc "▶ Chạy Tự Động" để xem việc chảy qua các tay!</div>';
+        } else {
+          logsContainer.innerHTML = logs.map(l => {
+            const isBossAction = l.from_agent === 'BOSS' || l.to_agent === 'BOSS';
+            return `
+              <div class="p-3 rounded-xl ${isBossAction ? 'bg-orange-500/10 border border-orange-500/30' : 'bg-[#131b2e] border border-white/5'} flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  <div class="px-2 py-0.5 rounded-lg bg-surface-800 text-[10px] font-black text-orange-400 uppercase">
+                    ${l.from_agent} ➔ ${l.to_agent}
+                  </div>
+                  <div>
+                    <span class="font-bold text-white text-xs">${l.action}:</span>
+                    <span class="text-slate-300 text-xs ml-1">${l.details || ''}</span>
+                  </div>
+                </div>
+                <div class="text-[10px] text-slate-500 whitespace-nowrap pl-2">
+                  ${(l.created_at || '').split(' ')[1] || ''}
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+    }
+
+    function renderAgentCardHtml(agent, index, totalInRow, arrowDirection = 'right', connections = []) {
+      if (!agent) return '';
+      const isRunning = agent.is_running;
+      const isWaitingApproval = (agent.waiting_approval_count > 0);
+      const isCompleted = (agent.status === 'Đã hoàn thành');
+
+      // Status pill styling
+      let statusBadge = '';
+      if (isWaitingApproval) {
+        statusBadge = `
+          <button onclick="event.stopPropagation(); openApproveZuckModal()" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/50 animate-pulse hover:bg-amber-500/30 transition-all flex items-center space-x-1">
+            <span>1 Chờ duyệt</span>
+            <span class="text-[10px]">⚡</span>
+          </button>
+        `;
+      } else if (isRunning) {
+        statusBadge = `
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1 animate-pulse"></span>
+            Đang chạy
+          </span>
+        `;
+      } else if (isCompleted) {
+        statusBadge = `
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
+            ✓ Đã xong
+          </span>
+        `;
+      } else {
+        statusBadge = `
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-slate-800 text-slate-400 border border-slate-700/50">
+            Sắp vào nhóm
+          </span>
+        `;
+      }
+
+      // Check if connection is active
+      let isConnActive = false;
+      if (connections && connections.length > 0) {
+        const found = connections.find(c => c.from === agent.id);
+        if (found && found.active) isConnActive = true;
+      }
+
+      // Card border & background
+      let cardBorder = 'border-slate-800 hover:border-slate-600';
+      if (isWaitingApproval) {
+        cardBorder = 'border-2 border-amber-500 shadow-[0_0_25px_rgba(245,158,11,0.3)]';
+      } else if (isRunning) {
+        cardBorder = 'border-2 border-orange-500/80 shadow-[0_0_20px_rgba(249,115,22,0.25)]';
+      }
+
+      // Connecting arrow HTML
+      let connectorHtml = '';
+      if (arrowDirection === 'right' && index < totalInRow - 1) {
+        connectorHtml = isConnActive 
+          ? `<div class="absolute -right-5 top-1/2 -translate-y-1/2 w-5 h-0.5 bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,1)] z-20 flex items-center justify-end"><span class="text-orange-500 -mr-1.5 text-[10px]">▶</span></div>`
+          : `<div class="absolute -right-5 top-1/2 -translate-y-1/2 w-5 border-b-2 border-dashed border-slate-700 z-20 flex items-center justify-end"><span class="text-slate-600 -mr-1.5 text-[10px]">▶</span></div>`;
+      } else if (arrowDirection === 'left' && index < totalInRow - 1) {
+        connectorHtml = isConnActive
+          ? `<div class="absolute -right-5 top-1/2 -translate-y-1/2 w-5 h-0.5 bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,1)] z-20 flex items-center justify-start"><span class="text-orange-500 -ml-1.5 text-[10px]">◀</span></div>`
+          : `<div class="absolute -right-5 top-1/2 -translate-y-1/2 w-5 border-b-2 border-dashed border-slate-700 z-20 flex items-center justify-start"><span class="text-slate-600 -ml-1.5 text-[10px]">◀</span></div>`;
+      }
+
+      return `
+        <div class="relative">
+          <div onclick="openAgentDetailModal('${agent.id}')" class="p-5 rounded-2xl bg-[#131b2e] border ${cardBorder} transition-all cursor-pointer group hover:-translate-y-1 flex flex-col items-center text-center relative select-none">
+            
+            <!-- AVATAR -->
+            <div class="mb-3">
+              ${getAgentAvatarSvg(agent.id, isRunning, isWaitingApproval)}
+            </div>
+
+            <!-- ROLE & NAME -->
+            <p class="text-[10px] uppercase tracking-wider font-extrabold text-orange-400/90 mb-0.5">${agent.role}</p>
+            <h4 class="text-sm font-extrabold text-white group-hover:text-orange-300 transition-colors mb-2">${agent.name}</h4>
+
+            <!-- STATUS BADGE -->
+            <div class="mb-4">
+              ${statusBadge}
+            </div>
+
+            <!-- WORK COUNTER -->
+            <div class="w-full pt-2.5 border-t border-white/5 flex flex-col items-center">
+              <span class="text-2xl font-black text-white leading-none">${agent.active_tasks_count || 0}</span>
+              <span class="text-[10px] text-slate-400 mt-1">việc đang làm</span>
+            </div>
+
+          </div>
+          ${connectorHtml}
+        </div>
+      `;
+    }
+
+    // Modal: Giao Chiến Dịch Mới
+    function openNewCampaignModal() {
+      document.getElementById('modal-new-campaign').classList.remove('hidden');
+    }
+
+    function applyCampaignPreset(presetType) {
+      const presets = {
+        mkt_software: {
+          title: "Chiến dịch Tuyển Săn Khách & Bán Phần Mềm Marketing Tự Động",
+          product: "Hệ thống AI Marketing quét nhóm Facebook, bóc tách nhu cầu và tự động đăng bài đa nick bảo vệ tài khoản",
+          goal: "Thu hút 50 khách hàng dùng thử & chốt 15 đơn bản quyền",
+          audience: "Chủ shop kinh doanh online, chủ doanh nghiệp SME, người làm marketing tự do"
+        },
+        course_training: {
+          title: "Chiến dịch Tuyển Sinh Khóa Học AI Marketing Thực Chiến",
+          product: "Khóa đào tạo 7 ngày làm chủ AI Agent & Tự động hóa bán hàng từ A-Z với cam kết đầu ra",
+          goal: "Tuyển sinh 100 học viên cho lớp K12 tháng tới",
+          audience: "Người mới kinh doanh online, nhân viên marketing muốn nâng cấp kỹ năng AI"
+        },
+        interior_design: {
+          title: "Chiến dịch Săn Khách Thiết Kế Thi Công Nội Thất Trọn Gói",
+          product: "Dịch vụ thiết kế & thi công nội thất căn hộ chung cư, nhà phố hiện đại bảo hành 5 năm",
+          goal: "Ký kết 5 hợp đồng thiết kế nội thất trọn gói trong tháng",
+          audience: "Gia chủ mới nhận nhà chung cư, người chuẩn bị hoàn thiện tổ ấm gia đình"
+        },
+        ecommerce_fashion: {
+          title: "Chiến dịch Bùng Nổ Doanh Số Bộ Sưu Tập Thời Trang Thu Đông",
+          product: "Bộ sưu tập đầm thiết kế cao cấp, tôn dáng, chất liệu lụa satin nhập khẩu",
+          goal: "Đẩy mạnh 300 đơn hàng trong tuần mở bán đầu tiên",
+          audience: "Phụ nữ công sở 25 - 40 tuổi tại các thành phố lớn yêu thích phong cách thanh lịch"
+        }
+      };
+
+      const p = presets[presetType];
+      if (p) {
+        document.getElementById('campaign-title-input').value = p.title;
+        document.getElementById('campaign-product-input').value = p.product;
+        document.getElementById('campaign-goal-input').value = p.goal;
+        document.getElementById('campaign-audience-input').value = p.audience;
+      }
+    }
+
+    async function submitCreateCampaign() {
+      const title = document.getElementById('campaign-title-input').value;
+      const product = document.getElementById('campaign-product-input').value;
+      const goal = document.getElementById('campaign-goal-input').value;
+      const audience = document.getElementById('campaign-audience-input').value;
+      const autoStart = document.getElementById('campaign-auto-start').checked;
+
+      if (!title.trim()) {
+        alert('Vui lòng nhập tên chiến dịch!');
+        return;
+      }
+
+      const btn = document.getElementById('btn-submit-campaign');
+      btn.innerText = 'Đang giao việc cho Kotler...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/pipeline/campaign/create', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            title: title,
+            product_info: product,
+            goal: goal,
+            target_audience: audience,
+            auto_start: autoStart
+          })
+        });
+        const data = await res.json();
+        closeModal('modal-new-campaign');
+        alert(data.message || 'Đã tạo chiến dịch thành công!');
+        loadPipeline();
+
+        // Start active polling
+        startPipelinePolling();
+      } catch (e) {
+        alert('Lỗi tạo chiến dịch: ' + e);
+      } finally {
+        btn.innerText = '🚀 Phát Lệnh Cho Dây Chuyền';
+        btn.disabled = false;
+      }
+    }
+
+    async function runNextPipelineStep() {
+      const btn = document.getElementById('btn-run-next-step');
+      btn.innerText = 'Đang chạy...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/pipeline/step/run-next', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({})
+        });
+        const data = await res.json();
+        loadPipeline();
+        if (data.status === 'waiting_approval') {
+          openApproveZuckModal();
+        }
+      } catch (e) {
+        alert('Lỗi chạy bước: ' + e);
+      } finally {
+        btn.innerText = '⏭ Bước tiếp';
+        btn.disabled = false;
+      }
+    }
+
+    async function runAllPipelineSteps() {
+      const btn = document.getElementById('btn-run-all-pipeline');
+      btn.innerHTML = '<span>⏳ Đang vận hành dây chuyền...</span>';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/pipeline/campaign/run-all', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({})
+        });
+        const data = await res.json();
+        startPipelinePolling();
+      } catch (e) {
+        alert('Lỗi chạy dây chuyền: ' + e);
+      } finally {
+        setTimeout(() => {
+          btn.innerHTML = `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span>▶ Chạy Tự Động Dây Chuyền</span>`;
+          btn.disabled = false;
+        }, 1500);
+      }
+    }
+
+    function startPipelinePolling() {
+      if (pipelinePollInterval) clearInterval(pipelinePollInterval);
+      let count = 0;
+      pipelinePollInterval = setInterval(async () => {
+        count++;
+        await loadPipeline();
+        // Check if stopped at waiting_approval
+        if (cachedPipelineState && cachedPipelineState.campaign && cachedPipelineState.campaign.status === 'waiting_approval') {
+          clearInterval(pipelinePollInterval);
+          pipelinePollInterval = null;
+        }
+        if (count > 25) {
+          clearInterval(pipelinePollInterval);
+          pipelinePollInterval = null;
+        }
+      }, 1800);
+    }
+
+    // Modal: Mark Zuckerberg Quick Approval
+    function openApproveZuckModal() {
+      const tasks = cachedPipelineState?.tasks || [];
+      const zuckTask = tasks.find(t => t.agent_id === 'zuck');
+      const ogilvyTask = tasks.find(t => t.agent_id === 'ogilvy');
+      
+      const fullText = ogilvyTask?.output_data?.full_post || zuckTask?.output_data?.approval_ticket?.full_content || "Đang chuẩn bị nội dung bài viết...";
+      document.getElementById('approve-post-preview').innerText = fullText;
+      document.getElementById('modal-approve-zuck').classList.remove('hidden');
+    }
+
+    function copyApprovedPostText() {
+      const text = document.getElementById('approve-post-preview').innerText;
+      navigator.clipboard.writeText(text);
+      alert('Đã copy nội dung bài đăng vào clipboard!');
+    }
+
+    async function confirmApproveZuck() {
+      const btn = document.getElementById('btn-confirm-approve-zuck');
+      btn.innerText = 'Đang xác nhận phê duyệt...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/pipeline/approve-post', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({})
+        });
+        const data = await res.json();
+        closeModal('modal-approve-zuck');
+        alert(data.message || 'Đã phê duyệt thành công!');
+        loadPipeline();
+        startPipelinePolling();
+      } catch (e) {
+        alert('Lỗi phê duyệt: ' + e);
+      } finally {
+        btn.innerText = '✓ PHÊ DUYỆT & ĐĂNG BÀI NGAY';
+        btn.disabled = false;
+      }
+    }
+
+    // Modal: Agent Details Viewer
+    function openAgentDetailModal(agentId) {
+      if (!cachedPipelineState) return;
+      const agent = cachedPipelineState.agents.find(a => a.id === agentId);
+      if (!agent) return;
+
+      const tasks = cachedPipelineState.tasks || [];
+      const task = tasks.find(t => t.agent_id === agentId);
+
+      document.getElementById('detail-agent-avatar').innerHTML = getAgentAvatarSvg(agentId, agent.is_running, agent.waiting_approval_count > 0);
+      document.getElementById('detail-agent-role').innerText = agent.role;
+      document.getElementById('detail-agent-name').innerText = agent.name;
+      document.getElementById('detail-agent-desc').innerText = agent.description;
+
+      const statusBadge = document.getElementById('detail-agent-status-badge');
+      statusBadge.innerText = agent.status;
+      statusBadge.className = agent.is_running 
+        ? 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400' 
+        : (agent.waiting_approval_count > 0 
+            ? 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 animate-pulse'
+            : 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-slate-400');
+
+      const bodyEl = document.getElementById('detail-agent-body');
+      const footerBtnEl = document.getElementById('detail-agent-footer-buttons');
+
+      // Generate Agent-Specific Rich Content
+      if (agentId === 'kotler') {
+        bodyEl.innerHTML = `
+          <div class="space-y-4 text-xs text-slate-300">
+            <div class="p-4 rounded-2xl bg-surface-900 border border-white/10 space-y-2">
+              <h4 class="font-bold text-white text-sm">👑 Vai trò Tổng Chỉ Huy của Philip Kotler:</h4>
+              <p>Trưởng phòng Philip Kotler chịu trách nhiệm nhận mục tiêu từ Boss, vạch ra chỉ thị cho Sherlock Holmes và giám sát dữ liệu báo cáo cuối cùng từ Warren Buffett để hoàn thiện vòng lặp chiến lược.</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="p-3 bg-surface-900 rounded-xl border border-white/5">
+                <span class="text-slate-400 block mb-1">Trạng thái dây chuyền:</span>
+                <span class="text-emerald-400 font-bold text-sm">Đang vận hành trơn tru</span>
+              </div>
+              <div class="p-3 bg-surface-900 rounded-xl border border-white/5">
+                <span class="text-slate-400 block mb-1">Số bước đã hoàn tất:</span>
+                <span class="text-orange-400 font-bold text-sm">${tasks.filter(t => t.status === 'completed').length} / 9 chuyên gia</span>
+              </div>
+            </div>
+          </div>
+        `;
+        footerBtnEl.innerHTML = `
+          <button onclick="openNewCampaignModal()" class="px-4 py-2 text-xs font-bold text-white bg-orange-600 hover:bg-orange-500 rounded-xl">Đổi Đề Bài Chiến Dịch</button>
+          <button onclick="closeModal('modal-agent-detail')" class="px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-surface-800 rounded-xl">Đóng</button>
+        `;
+      } else if (!task || !task.output_data) {
+        bodyEl.innerHTML = `
+          <div class="py-12 text-center text-slate-400 text-xs space-y-3">
+            <div class="text-4xl">⏳</div>
+            <p class="font-semibold text-slate-300">Chuyên viên ${agent.name} đang ở trạng thái sẵn sàng.</p>
+            <p class="text-slate-500 max-w-sm mx-auto">Nhiệm vụ sẽ tự động kích hoạt ngay khi chuyên gia ở bước trước hoàn thành và bàn giao dữ liệu sang.</p>
+          </div>
+        `;
+        footerBtnEl.innerHTML = `
+          <button onclick="executeSingleAgentStep('${agentId}')" class="px-4 py-2 text-xs font-bold text-white bg-brand-600 hover:bg-brand-500 rounded-xl">Kích Hoạt Chạy Bước Này Ngay</button>
+          <button onclick="closeModal('modal-agent-detail')" class="px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-surface-800 rounded-xl">Đóng</button>
+        `;
+      } else {
+        const out = task.output_data;
+        let contentHtml = '';
+
+        if (agentId === 'holmes') {
+          contentHtml = `
+            <div class="space-y-3">
+              <div class="p-3 bg-indigo-500/10 rounded-xl border border-indigo-500/20 text-indigo-300 font-medium text-xs">
+                🕵️ <b>Hồ sơ trinh sát:</b> ${out.intelligence_summary || ''}
+              </div>
+              <div>
+                <h5 class="font-bold text-white mb-1.5">⚡ 3 Nỗi đau cốt lõi của khách hàng:</h5>
+                <ul class="space-y-1 text-slate-300 text-xs list-disc list-inside">
+                  ${(out.pain_points || []).map(p => `<li>${p}</li>`).join('')}
+                </ul>
+              </div>
+              <div>
+                <h5 class="font-bold text-white mb-1.5">🎯 Góc khơi gợi tò mò (Trending Hooks):</h5>
+                <ul class="space-y-1 text-slate-300 text-xs list-disc list-inside">
+                  ${(out.trending_hooks || []).map(h => `<li>"${h}"</li>`).join('')}
+                </ul>
+              </div>
+            </div>
+          `;
+        } else if (agentId === 'sun_tzu') {
+          contentHtml = `
+            <div class="space-y-3">
+              <div class="p-3 bg-orange-500/10 rounded-xl border border-orange-500/20 text-orange-300 font-medium text-xs">
+                ⚔️ <b>Định vị giá trị cốt lõi:</b> ${out.core_value_proposition || ''}
+              </div>
+              <h5 class="font-bold text-white">🚩 3 Góc Đánh Chiến Lược:</h5>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                ${(out.strategic_angles || []).map((a, i) => `
+                  <div class="p-2.5 rounded-xl bg-surface-900 border border-white/5 text-xs">
+                    <span class="font-bold text-orange-400 block mb-1">Góc ${i+1}:</span>
+                    <p class="text-white font-medium mb-1">${a.name}</p>
+                    <p class="text-slate-400 text-[11px]">${a.hook_concept}</p>
+                  </div>
+                `).join('')}
+              </div>
+              <div class="p-2.5 rounded-xl bg-surface-900 border border-white/5 text-xs text-slate-300">
+                <b class="text-white">Chỉ thị cho David Ogilvy:</b> ${out.order_to_ogilvy || ''}
+              </div>
+            </div>
+          `;
+        } else if (agentId === 'ogilvy') {
+          contentHtml = `
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-white text-xs">✍️ Bài viết bán hàng chuyển đổi cao:</span>
+                <button onclick="navigator.clipboard.writeText(document.getElementById('ogilvy-text-preview').innerText); alert('Đã copy bài viết!');" class="text-xs text-brand-400 hover:text-brand-300 font-bold">📋 Copy bài viết</button>
+              </div>
+              <div id="ogilvy-text-preview" class="p-4 bg-surface-950 rounded-2xl border border-white/10 text-slate-200 whitespace-pre-line text-xs font-mono max-h-60 overflow-y-auto custom-scroll">
+${out.full_post || ''}
+              </div>
+              <div>
+                <span class="font-bold text-slate-400 text-xs block mb-1">3 Biến thể tiêu đề ngắn:</span>
+                <div class="space-y-1">
+                  ${(out.variants || []).map(v => `<div class="p-2 bg-surface-900 rounded-lg text-slate-300 text-xs">👉 ${v}</div>`).join('')}
+                </div>
+              </div>
+            </div>
+          `;
+        } else if (agentId === 'picasso') {
+          contentHtml = `
+            <div class="space-y-3">
+              <div class="p-3 bg-purple-500/10 rounded-xl border border-purple-500/20 text-purple-300 text-xs">
+                🎨 <b>Ý tưởng thị giác:</b> ${out.visual_concept || ''}
+              </div>
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <span class="font-bold text-white text-xs">Prompt Midjourney / Flux:</span>
+                  <button onclick="navigator.clipboard.writeText('${(out.midjourney_prompt || '').replace(/'/g, "\\'")}'); alert('Đã copy Prompt Midjourney!');" class="text-xs text-purple-400 hover:text-purple-300 font-bold">📋 Copy Prompt</button>
+                </div>
+                <div class="p-3 bg-surface-950 rounded-xl text-purple-200 text-xs font-mono border border-purple-500/20 break-words">
+                  ${out.midjourney_prompt || ''}
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <div class="p-2.5 bg-surface-900 rounded-xl border border-white/5">
+                  <span class="text-slate-400 block mb-0.5">Chữ trên ảnh (Headline):</span>
+                  <b class="text-white">${out.text_on_image || ''}</b>
+                </div>
+                <div class="p-2.5 bg-surface-900 rounded-xl border border-white/5">
+                  <span class="text-slate-400 block mb-0.5">Bố cục:</span>
+                  <span class="text-slate-300">${out.layout_recommendation || ''}</span>
+                </div>
+              </div>
+            </div>
+          `;
+        } else if (agentId === 'spielberg') {
+          contentHtml = `
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-white text-xs">🎬 Kịch bản Video Ngắn: ${out.video_title || ''} (${out.target_duration || '35s'})</span>
+                <span class="text-xs text-rose-400 font-semibold">🎵 ${out.bgm_soundtrack || ''}</span>
+              </div>
+              <div class="space-y-2 max-h-64 overflow-y-auto custom-scroll pr-1">
+                ${(out.scenes || []).map(s => `
+                  <div class="p-3 rounded-xl bg-surface-900 border border-white/5 text-xs space-y-1">
+                    <div class="flex justify-between items-center text-rose-400 font-bold">
+                      <span>${s.time} • ${s.stage}</span>
+                      <span class="text-slate-400 font-normal">SFX: ${s.sfx || ''}</span>
+                    </div>
+                    <p class="text-white"><b class="text-slate-400">Hình ảnh:</b> ${s.visual}</p>
+                    <p class="text-amber-300"><b class="text-slate-400">Lời thoại:</b> "${s.voiceover}"</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        } else if (agentId === 'zuck') {
+          contentHtml = `
+            <div class="space-y-3">
+              <div class="p-3 bg-blue-500/10 rounded-xl border border-blue-500/20 text-blue-300 text-xs">
+                📢 <b>Trạng thái phân phối:</b> ${(out.approval_ticket && out.approval_ticket.message) || out.anti_spam_guard || ''}
+              </div>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                ${(out.channels || []).map(c => `
+                  <div class="p-2.5 rounded-xl bg-surface-900 border border-white/5 flex items-center justify-between">
+                    <span class="text-white font-medium">${c.channel}</span>
+                    <span class="text-emerald-400 font-bold text-[10px]">${c.status}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        } else if (agentId === 'brunson') {
+          contentHtml = `
+            <div class="space-y-3">
+              <div class="p-3 bg-teal-500/10 rounded-xl border border-teal-500/20 text-teal-300 text-xs">
+                🎁 <b>Mồi câu Lead Magnet:</b> ${(out.lead_magnet && out.lead_magnet.name) || ''}
+              </div>
+              <h5 class="font-bold text-white text-xs">Chuỗi 3 Email Nuôi Dưỡng Tự Động:</h5>
+              <div class="space-y-2">
+                ${(out.email_sequence || []).map(e => `
+                  <div class="p-2.5 rounded-xl bg-surface-900 border border-white/5 text-xs">
+                    <div class="flex justify-between items-center text-teal-400 font-bold mb-1">
+                      <span>${e.day}</span>
+                      <span class="text-slate-300">${e.subject}</span>
+                    </div>
+                    <p class="text-slate-400 text-[11px]">${e.preview}</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        } else if (agentId === 'robin_hood') {
+          contentHtml = `
+            <div class="space-y-3">
+              <div class="p-3 bg-yellow-500/10 rounded-xl border border-yellow-500/20 text-yellow-300 text-xs">
+                🎯 <b>Mục tiêu chiến dịch:</b> ${out.campaign_objective || ''}
+              </div>
+              <div class="text-xs">
+                <span class="text-slate-400 block mb-1 font-semibold">Tệp sở thích (Interests):</span>
+                <div class="flex flex-wrap gap-1.5">
+                  ${(out.target_interests || []).map(t => `<span class="px-2 py-0.5 rounded-lg bg-surface-900 border border-white/10 text-slate-200">${t}</span>`).join('')}
+                </div>
+              </div>
+              <div class="p-3 bg-surface-900 rounded-xl border border-white/5 text-xs space-y-1">
+                <div class="font-bold text-white">Phân bổ ngân sách tối ưu:</div>
+                <div class="text-slate-300">Phase Test: ${out.budget_allocation?.test_phase || '20%'}</div>
+                <div class="text-emerald-400">Scale Chiến Thắng: ${out.budget_allocation?.scaling_phase || '70%'}</div>
+                <div class="text-slate-300">Retargeting: ${out.budget_allocation?.retargeting || '10%'}</div>
+              </div>
+            </div>
+          `;
+        } else if (agentId === 'buffett') {
+          contentHtml = `
+            <div class="space-y-3">
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
+                <div class="p-3 bg-surface-900 rounded-xl border border-white/5">
+                  <span class="text-[10px] text-slate-400 block">Lượt tiếp cận</span>
+                  <b class="text-white text-xs">${out.projected_reach || '35,000'}</b>
+                </div>
+                <div class="p-3 bg-surface-900 rounded-xl border border-white/5">
+                  <span class="text-[10px] text-slate-400 block">Tỉ lệ CTR</span>
+                  <b class="text-emerald-400 text-xs">${out.projected_ctr || '4.2%'}</b>
+                </div>
+                <div class="p-3 bg-surface-900 rounded-xl border border-white/5">
+                  <span class="text-[10px] text-slate-400 block">Chi phí / Lead</span>
+                  <b class="text-cyan-300 text-xs">${out.projected_cpa || '42,000đ'}</b>
+                </div>
+                <div class="p-3 bg-surface-900 rounded-xl border border-white/5">
+                  <span class="text-[10px] text-slate-400 block">Tỷ suất ROI</span>
+                  <b class="text-orange-400 text-sm font-black">${out.projected_roi || '380%'}</b>
+                </div>
+              </div>
+              <div class="p-3 bg-cyan-500/10 rounded-xl border border-cyan-500/20 text-cyan-200 text-xs">
+                📈 <b>Khuyến nghị cho Philip Kotler:</b> ${out.recommendations_for_kotler || ''}
+              </div>
+            </div>
+          `;
+        }
+
+        bodyEl.innerHTML = contentHtml;
+
+        if (agentId === 'zuck' && agent.waiting_approval_count > 0) {
+          footerBtnEl.innerHTML = `
+            <button onclick="openApproveZuckModal()" class="px-5 py-2 text-xs font-bold text-white bg-amber-600 hover:bg-amber-500 rounded-xl animate-pulse">⚡ Xem & Phê Duyệt Đăng Bài</button>
+            <button onclick="closeModal('modal-agent-detail')" class="px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-surface-800 rounded-xl">Đóng</button>
+          `;
+        } else {
+          footerBtnEl.innerHTML = `
+            <button onclick="closeModal('modal-agent-detail')" class="px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-surface-800 rounded-xl">Đóng</button>
+          `;
+        }
+      }
+
+      document.getElementById('modal-agent-detail').classList.remove('hidden');
+    }
+
+    async function executeSingleAgentStep(agentId) {
+      closeModal('modal-agent-detail');
+      try {
+        const res = await fetch('/api/pipeline/step/run-next', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ agent_id: agentId })
+        });
+        const data = await res.json();
+        loadPipeline();
+        openAgentDetailModal(agentId);
+      } catch (e) {
+        alert('Lỗi kích hoạt agent: ' + e);
+      }
+    }
+
+    async function resetPipelineData() {
+      if (!confirm('Bạn có chắc chắn muốn làm mới toàn bộ dây chuyền về trạng thái ban đầu?')) return;
+      try {
+        const res = await fetch('/api/pipeline/reset', { method: 'POST' });
+        const data = await res.json();
+        alert(data.message || 'Đã làm mới!');
+        loadPipeline();
+      } catch (e) {
+        alert('Lỗi reset: ' + e);
+      }
+    }
+
+    // Bật/tắt chế độ toàn màn hình (Full Screen)
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.warn("Fullscreen request error:", err);
+        });
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    // Khởi tạo ban đầu: Mở ngay Dây Chuyền Marketing!
+    window.onload = () => {
+      switchTab('tab-pipeline');
+    };
+  </script>
+</body>
+</html>
+

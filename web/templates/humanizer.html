@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Humanize Studio — Trình Biên Tập & Chuẩn Hóa Văn Bản Tiếng Việt</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f7ff',
+              100: '#e0effe',
+              500: '#0284c7',
+              600: '#0369a1',
+              700: '#075985',
+              navy: '#0f172a'
+            }
+          },
+          fontFamily: {
+            sans: ['"Inter"', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #f8fafc;
+      color: #0f172a;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    .cliche-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      background-color: #fef2f2;
+      border: 1px solid #fee2e2;
+      color: #b91c1c;
+      font-size: 11px;
+      font-weight: 500;
+      border-radius: 4px;
+      margin-right: 4px;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body class="flex flex-col h-screen w-screen antialiased select-none">
+
+  <!-- ================= TOP HEADER (H: 56px) ================= -->
+  <header class="h-14 bg-white border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between z-20 shrink-0">
+    
+    <!-- LEFT: BRAND -->
+    <div class="flex items-center space-x-3">
+      <div class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white font-bold text-sm shadow-sm">
+        H
+      </div>
+      <div>
+        <div class="flex items-center space-x-2">
+          <span class="font-bold text-sm tracking-tight text-slate-900">Humanize Studio</span>
+          <span class="text-[11px] font-medium px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">Tiếng Việt</span>
+        </div>
+        <p class="text-[11px] text-slate-500 hidden sm:block">Biên tập & tự nhiên hóa nội dung AI</p>
+      </div>
+    </div>
+
+    <!-- CENTER: SEGMENTED MODE SELECTOR -->
+    <div class="inline-flex p-1 bg-slate-100 rounded-lg border border-slate-200/80">
+      <button type="button" onclick="selectMode('social_mkt')" id="tab-social" class="mode-tab px-3.5 py-1 text-xs font-semibold rounded-md transition-all bg-white text-slate-900 shadow-sm">
+        Truyền thông & MKT
+      </button>
+      <button type="button" onclick="selectMode('academic')" id="tab-academic" class="mode-tab px-3.5 py-1 text-xs font-medium text-slate-600 hover:text-slate-900 rounded-md transition-all">
+        Học thuật & Luận văn
+      </button>
+      <button type="button" onclick="selectMode('blog_seo')" id="tab-seo" class="mode-tab px-3.5 py-1 text-xs font-medium text-slate-600 hover:text-slate-900 rounded-md transition-all">
+        Website & SEO
+      </button>
+    </div>
+
+    <!-- RIGHT: USER BALANCE & AUTH ACTIONS -->
+    <div class="flex items-center space-x-2.5">
+      
+      <!-- GUEST STATE (NOT LOGGED IN) -->
+      <div id="auth-guest" class="flex items-center space-x-2">
+        <span class="hidden md:inline-flex items-center text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-200">
+          Tặng 5.000 từ miễn phí
+        </span>
+        <button onclick="openLoginModal()" class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-800 text-xs font-semibold shadow-sm transition-all">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+          </svg>
+          <span>Đăng nhập Google</span>
+        </button>
+      </div>
+
+      <!-- LOGGED IN STATE -->
+      <div id="auth-logged-in" class="hidden flex items-center space-x-3">
+        <!-- Word Balance Pill -->
+        <div onclick="openPricingModal()" title="Nhấp để nạp thêm số từ" class="cursor-pointer group flex items-center space-x-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-3 py-1 rounded-lg transition-all">
+          <div class="text-left">
+            <div class="text-[10px] text-slate-400 font-medium leading-none">Số từ còn lại</div>
+            <div class="text-xs font-bold text-slate-800 leading-tight">
+              <span id="nav-words-balance" class="text-emerald-600">3,000</span> <span class="text-[10px] font-normal text-slate-400">từ</span>
+            </div>
+          </div>
+          <span class="text-[11px] font-semibold text-slate-900 group-hover:text-brand-600 ml-1">+ Nạp từ</span>
+        </div>
+
+        <!-- Upgrade Button -->
+        <button onclick="openPricingModal()" class="hidden sm:inline-flex items-center px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-sm transition-all">
+          Nâng cấp gói
+        </button>
+
+        <!-- User Menu (Avatar & Logout) -->
+        <div class="flex items-center space-x-2 pl-1 border-l border-slate-200">
+          <div id="user-avatar" class="w-7 h-7 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-xs uppercase">
+            U
+          </div>
+          <span id="user-name" class="text-xs font-medium text-slate-700 max-w-[100px] truncate hidden md:inline">User</span>
+          <button onclick="logout()" title="Đăng xuất" class="p-1 text-slate-400 hover:text-slate-600 transition-colors">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- FULLSCREEN TOGGLE -->
+      <button onclick="toggleFullScreen()" title="Toàn màn hình" class="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 hover:text-slate-900 transition-colors">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
+        </svg>
+      </button>
+
+    </div>
+  </header>
+
+  <!-- ================= SUB-TOOLBAR (H: 48px) ================= -->
+  <div class="h-12 bg-white/80 backdrop-blur border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between text-xs z-10 shrink-0">
+    
+    <!-- LEFT: REWRITE CONFIGURATION -->
+    <div class="flex items-center space-x-4">
+      <div class="flex items-center space-x-2">
+        <span class="text-slate-500 font-medium hidden sm:inline">Mức độ can thiệp:</span>
+        <select id="select-intensity" class="bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-md px-2.5 py-1 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-400">
+          <option value="balanced" selected>Cân bằng (Giữ nguyên ý, tự nhiên hóa)</option>
+          <option value="light">Hiệu đính nhẹ (Chỉ lọc bỏ sáo ngữ AI)</option>
+          <option value="creative">Viết lại chuyên sâu (Giọng văn sắc sảo)</option>
+        </select>
+      </div>
+
+      <div class="hidden md:flex items-center space-x-2">
+        <span class="text-slate-500 font-medium">Giọng văn:</span>
+        <input type="text" id="input-custom-tone" placeholder="VD: Gần gũi, đanh thép, học thuật..." class="w-56 bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-md px-2.5 py-1 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-400">
+      </div>
+    </div>
+
+    <!-- RIGHT: SAMPLE & ACTION BUTTONS -->
+    <div class="flex items-center space-x-2">
+      <div class="hidden sm:flex items-center space-x-1.5 mr-2">
+        <span class="text-slate-400">Mẫu thử:</span>
+        <button onclick="loadSample('social')" class="px-2 py-0.5 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100 text-xs">Marketing</button>
+        <span class="text-slate-300">•</span>
+        <button onclick="loadSample('academic')" class="px-2 py-0.5 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100 text-xs">Luận văn</button>
+        <span class="text-slate-300">•</span>
+        <button onclick="clearAll()" class="px-2 py-0.5 rounded text-slate-500 hover:text-rose-600 hover:bg-rose-50 text-xs">Xóa trắng</button>
+      </div>
+
+      <!-- AUDIT BUTTON (ALWAYS FREE) -->
+      <button onclick="runAudit()" id="btn-audit" class="px-3.5 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 text-slate-700 font-medium transition-colors flex items-center space-x-1.5" title="Kiểm tra hoàn toàn miễn phí, không tốn số từ">
+        <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <span>Kiểm tra lỗi AI</span>
+      </button>
+
+      <!-- HUMANIZE PRIMARY BUTTON -->
+      <button onclick="runHumanize()" id="btn-humanize" class="px-4 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium shadow-sm transition-all flex items-center space-x-1.5">
+        <svg id="spinner-humanize" class="hidden animate-spin w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span id="btn-humanize-text">Chuẩn hóa nội dung</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= MAIN FULLSCREEN WORKSPACE ================= -->
+  <main class="flex-1 w-full grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200 bg-white overflow-hidden select-text">
+
+    <!-- LEFT COLUMN: ORIGINAL RAW TEXT -->
+    <div class="flex flex-col h-full overflow-hidden bg-white">
+      
+      <!-- PANE HEADER -->
+      <div class="h-9 px-4 sm:px-6 bg-slate-50/60 border-b border-slate-200/80 flex items-center justify-between text-xs text-slate-500 shrink-0">
+        <div class="flex items-center space-x-2">
+          <span class="font-semibold text-slate-700 uppercase tracking-wider text-[11px]">Văn bản AI gốc</span>
+          <span class="text-slate-300">|</span>
+          <span id="char-count">0 ký tự</span>
+          <span class="text-slate-300">•</span>
+          <span id="word-count" class="font-semibold text-slate-700">0 từ</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="pasteFromClipboard()" class="hover:text-slate-900 font-medium text-[11px] inline-flex items-center space-x-1">
+            <svg class="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+            </svg>
+            <span>Dán nhanh</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- TEXTAREA INPUT -->
+      <div class="flex-1 p-4 sm:p-6 overflow-hidden flex flex-col">
+        <textarea id="input-text" placeholder="Dán đoạn văn bản được tạo bởi ChatGPT, Claude, Gemini hoặc bất kỳ AI nào vào đây..." class="w-full flex-1 bg-transparent text-[15px] leading-relaxed text-slate-800 placeholder-slate-400 border-none outline-none resize-none custom-scroll focus:ring-0"></textarea>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN: STANDARDIZED HUMAN OUTPUT -->
+    <div class="flex flex-col h-full overflow-hidden bg-slate-50/30">
+      
+      <!-- PANE HEADER -->
+      <div class="h-9 px-4 sm:px-6 bg-slate-50/60 border-b border-slate-200/80 flex items-center justify-between text-xs text-slate-500 shrink-0">
+        <div class="flex items-center space-x-2">
+          <span class="font-semibold text-slate-700 uppercase tracking-wider text-[11px]">Bản chuẩn hóa tự nhiên</span>
+          <span class="text-slate-300">|</span>
+          <span id="output-word-count">0 từ</span>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button onclick="copyOutput()" id="btn-copy" class="hover:text-slate-900 font-medium text-[11px] inline-flex items-center space-x-1">
+            <svg class="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+            </svg>
+            <span id="copy-btn-text">Sao chép</span>
+          </button>
+          <span class="text-slate-300">•</span>
+          <button onclick="downloadOutput()" class="hover:text-slate-900 font-medium text-[11px] inline-flex items-center space-x-1">
+            <svg class="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            <span>Tải file .txt</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- OUTPUT CONTAINER -->
+      <div class="flex-1 p-4 sm:p-6 overflow-hidden flex flex-col relative">
+        
+        <!-- EMPTY PLACEHOLDER -->
+        <div id="output-placeholder" class="h-full flex flex-col items-center justify-center text-center px-4">
+          <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-3 border border-slate-200">
+            <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+            </svg>
+          </div>
+          <p class="text-sm font-semibold text-slate-700">Chưa có kết quả biên tập</p>
+          <p class="text-xs text-slate-500 mt-1 max-w-sm leading-relaxed">
+            Dán nội dung vào khung bên trái và bấm <b>"Chuẩn hóa nội dung"</b> để chuyển đổi thành văn phong người viết tự nhiên.
+          </p>
+        </div>
+
+        <!-- READONLY OUTPUT TEXTAREA -->
+        <textarea id="output-text" readonly placeholder="" class="hidden w-full flex-1 bg-transparent text-[15px] leading-relaxed text-slate-900 border-none outline-none resize-none custom-scroll focus:ring-0"></textarea>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ================= BOTTOM STATUS RIBBON (H: 42px) ================= -->
+  <footer class="h-11 bg-white border-t border-slate-200 px-4 sm:px-6 flex items-center justify-between text-xs text-slate-600 z-10 shrink-0">
+    
+    <!-- LEFT: AI DETECTOR & BURSTINESS METRICS -->
+    <div class="flex items-center space-x-5">
+      <div class="flex items-center space-x-2">
+        <span class="text-slate-400 font-medium">Chỉ số AI:</span>
+        <span id="status-ai-score" class="font-semibold text-slate-800">--%</span>
+        <span id="status-ai-badge" class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-600">Chưa kiểm tra</span>
+      </div>
+
+      <div class="h-3 w-px bg-slate-200 hidden sm:block"></div>
+
+      <div class="hidden sm:flex items-center space-x-2">
+        <span class="text-slate-400 font-medium">Độ biến thiên nhịp điệu:</span>
+        <span id="status-burstiness" class="font-semibold text-slate-800">--/100</span>
+      </div>
+
+      <div class="h-3 w-px bg-slate-200 hidden md:block"></div>
+
+      <div class="hidden md:flex items-center space-x-2 text-slate-500">
+        <span>Tổng số câu: <b id="stat-sentences" class="text-slate-700">0</b></span>
+        <span>•</span>
+        <span>TB từ/câu: <b id="stat-avg-words" class="text-slate-700">0</b></span>
+      </div>
+    </div>
+
+    <!-- RIGHT: CLICHE COUNTER / DRAWER TOGGLE -->
+    <div class="flex items-center space-x-3">
+      <div id="cliche-summary" class="flex items-center space-x-1.5 text-slate-500">
+        <span>Sáo ngữ AI:</span>
+        <span id="cliche-counter" class="font-semibold text-slate-700">0 cụm từ</span>
+      </div>
+
+      <button onclick="toggleClicheDrawer()" id="btn-toggle-cliches" class="hidden text-xs text-brand-600 hover:text-brand-700 font-medium hover:underline">
+        Chi tiết
+      </button>
+    </div>
+
+  </footer>
+
+  <!-- ================= COLLAPSIBLE CLICHE DRAWER ================= -->
+  <div id="cliche-drawer" class="hidden bg-slate-50 border-t border-slate-200 px-4 sm:px-6 py-2.5 max-h-32 overflow-y-auto custom-scroll text-xs">
+    <div class="flex items-center justify-between mb-1.5">
+      <span class="font-medium text-slate-600">Các sáo ngữ rập khuôn được phát hiện cần chỉnh sửa:</span>
+      <button onclick="toggleClicheDrawer()" class="text-slate-400 hover:text-slate-600 font-bold">&times;</button>
+    </div>
+    <div id="cliche-tags-list" class="flex flex-wrap"></div>
+  </div>
+
+  <!-- ================= MODAL: GOOGLE LOGIN ================= -->
+  <div id="login-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white border border-slate-200 p-6 rounded-2xl max-w-sm w-full space-y-4 shadow-xl">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+        <h3 class="font-bold text-sm text-slate-900">Đăng Nhập Tài Khoản</h3>
+        <button onclick="closeLoginModal()" class="text-slate-400 hover:text-slate-600 text-lg leading-none">&times;</button>
+      </div>
+
+      <div class="text-center py-2">
+        <div class="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-2 font-bold text-xl border border-emerald-100">
+          🎁
+        </div>
+        <h4 class="font-bold text-base text-slate-900">Nhận Ngay 5.000 Từ Miễn Phí</h4>
+        <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+          Đăng ký bằng tài khoản Google để kích hoạt công cụ và nhận ngay 5.000 từ chuẩn hóa chất lượng cao.
+        </p>
+      </div>
+
+      <!-- Quick Google Login Option -->
+      <div class="space-y-3 pt-1">
+        <div>
+          <label class="block text-xs font-medium text-slate-700 mb-1">Email Google của bạn:</label>
+          <input type="email" id="login-email" placeholder="example@gmail.com" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-700 mb-1">Họ và tên (Tùy chọn):</label>
+          <input type="text" id="login-name" placeholder="Nguyễn Văn A" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900">
+        </div>
+
+        <button onclick="submitGoogleLogin()" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center justify-center space-x-2 shadow-sm transition-all">
+          <svg class="w-4 h-4 bg-white rounded-full p-0.5" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+          </svg>
+          <span>Tiếp tục với Google</span>
+        </button>
+      </div>
+
+      <div class="text-[11px] text-center text-slate-400 pt-1">
+        Bằng cách tiếp tục, bạn đồng ý với Điều khoản & Chính sách dịch vụ.
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: BẢNG GIÁ & NÂNG CẤP GÓI ================= -->
+  <div id="pricing-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
+    <div class="bg-white border border-slate-200 p-6 sm:p-8 rounded-2xl max-w-4xl w-full space-y-6 shadow-2xl my-auto">
+      
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div>
+          <h3 class="font-bold text-lg text-slate-900">Bảng Giá Nạp Gói Từ — Humanize Studio</h3>
+          <p class="text-xs text-slate-500 mt-0.5">Số từ không bao giờ hết hạn, xử lý tốc độ cao và mở khóa trọn vẹn 3 chế độ</p>
+        </div>
+        <button onclick="closePricingModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none">&times;</button>
+      </div>
+
+      <!-- PRICING TIERS GRID -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- GÓI 1: PAY-AS-YOU-GO (SINH VIÊN) -->
+        <div class="rounded-xl border-2 border-slate-200 hover:border-slate-800 p-5 flex flex-col justify-between transition-all bg-white relative">
+          <div>
+            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Nạp Lẻ (Sinh Viên)</div>
+            <div class="mt-2 flex items-baseline">
+              <span class="text-2xl font-black text-slate-900">49.000đ</span>
+              <span class="text-xs text-slate-400 ml-1">/lần</span>
+            </div>
+            <div class="mt-2 text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded inline-block">
+              40.000 từ
+            </div>
+            <ul class="mt-4 space-y-2 text-xs text-slate-600">
+              <li class="flex items-center space-x-1.5"><span>✓</span> <span>Không giới hạn hạn dùng</span></li>
+              <li class="flex items-center space-x-1.5"><span>✓</span> <span>Phù hợp làm đồ án & luận văn</span></li>
+              <li class="flex items-center space-x-1.5"><span>✓</span> <span>Mở khóa 3 chế độ chuyên sâu</span></li>
+            </ul>
+          </div>
+          <button onclick="selectPackage('payg_40k', 'Gói Nạp Lẻ (40.000 từ)', 49000)" class="mt-6 w-full py-2 px-3 rounded-lg border border-slate-300 hover:bg-slate-100 text-slate-800 font-semibold text-xs transition-colors">
+            Chọn gói 49k
+          </button>
+        </div>
+
+        <!-- GÓI 2: STARTER (CÁ NHÂN) -->
+        <div class="rounded-xl border-2 border-slate-200 hover:border-slate-800 p-5 flex flex-col justify-between transition-all bg-white relative">
+          <div>
+            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Cá Nhân (Starter)</div>
+            <div class="mt-2 flex items-baseline">
+              <span class="text-2xl font-black text-slate-900">99.000đ</span>
+              <span class="text-xs text-slate-400 ml-1">/tháng</span>
+            </div>
+            <div class="mt-2 text-xs font-semibold text-brand-700 bg-brand-50 px-2 py-0.5 rounded inline-block">
+              90.000 từ / tháng
+            </div>
+            <ul class="mt-4 space-y-2 text-xs text-slate-600">
+              <li class="flex items-center space-x-1.5"><span>✓</span> <span>~150 bài content mạng xã hội</span></li>
+              <li class="flex items-center space-x-1.5"><span>✓</span> <span>Dành cho Freelancer/Creator</span></li>
+              <li class="flex items-center space-x-1.5"><span>✓</span> <span>Hỗ trợ tùy biến giọng văn</span></li>
+            </ul>
+          </div>
+          <button onclick="selectPackage('starter', 'Gói Cá Nhân (90.000 từ/tháng)', 99000)" class="mt-6 w-full py-2 px-3 rounded-lg border border-slate-300 hover:bg-slate-100 text-slate-800 font-semibold text-xs transition-colors">
+            Chọn gói 99k
+          </button>
+        </div>
+
+        <!-- GÓI 3: PRO (CHUYÊN NGHIỆP - POPULAR) -->
+        <div class="rounded-xl border-2 border-slate-900 p-5 flex flex-col justify-between shadow-md transition-all bg-white relative">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full">
+            Khuyên Dùng
+          </div>
+          <div>
+            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-700">Chuyên Nghiệp (Pro)</div>
+            <div class="mt-2 flex items-baseline">
+              <span class="text-2xl font-black text-slate-900">199.000đ</span>
+              <span class="text-xs text-slate-400 ml-1">/tháng</span>
+            </div>
+            <div class="mt-2 text-xs font-semibold text-purple-700 bg-purple-50 px-2 py-0.5 rounded inline-block">
+              300.000 từ / tháng
+            </div>
+            <ul class="mt-4 space-y-2 text-xs text-slate-600">
+              <li class="flex items-center space-x-1.5"><span>✓</span> <span>Dành cho Agency & SEOer</span></li>
+              <li class="flex items-center space-x-1.5"><span>✓</span> <span>Ưu tiên tốc độ xử lý tức thì</span></li>
+              <li class="flex items-center space-x-1.5"><span>✓</span> <span>Chống AI Flop nâng cao</span></li>
+            </ul>
+          </div>
+          <button onclick="selectPackage('pro', 'Gói Chuyên Nghiệp (300.000 từ/tháng)', 199000)" class="mt-6 w-full py-2 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs shadow-sm transition-colors">
+            Chọn gói 199k
+          </button>
+        </div>
+
+        <!-- GÓI 4: ANNUAL (GÓI NĂM - TIẾT KIỆM) -->
+        <div class="rounded-xl border-2 border-slate-200 hover:border-slate-800 p-5 flex flex-col justify-between transition-all bg-white relative">
+          <div class="absolute -top-3 right-3 bg-amber-100 text-amber-800 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full border border-amber-200">
+            Tiết kiệm 40%
+          </div>
+          <div>
+            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Gói Năm Tiết Kiệm</div>
+            <div class="mt-2 flex items-baseline">
+              <span class="text-2xl font-black text-slate-900">790.000đ</span>
+              <span class="text-xs text-slate-400 ml-1">/năm</span>
+            </div>
+            <div class="mt-2 text-xs font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded inline-block">
+              1.000.000 từ / năm
+            </div>
+            <ul class="mt-4 space-y-2 text-xs text-slate-600">
+              <li class="flex items-center space-x-1.5"><span>✓</span> <span>Chỉ tương đương 65k/tháng</span></li>
+              <li class="flex items-center space-x-1.5"><span>✓</span> <span>Đầy đủ tính năng cao cấp</span></li>
+              <li class="flex items-center space-x-1.5"><span>✓</span> <span>Hỗ trợ kỹ thuật 24/7</span></li>
+            </ul>
+          </div>
+          <button onclick="selectPackage('annual', 'Gói Năm (1.000.000 từ/năm)', 790000)" class="mt-6 w-full py-2 px-3 rounded-lg border border-slate-300 hover:bg-slate-100 text-slate-800 font-semibold text-xs transition-colors">
+            Chọn gói 790k
+          </button>
+        </div>
+
+      </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: THANH TOÁN (CHECKOUT & CHỜ THANH TOÁN) ================= -->
+  <div id="checkout-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
+    <div class="bg-white border border-slate-200 p-6 sm:p-7 rounded-2xl max-w-2xl w-full space-y-5 shadow-2xl my-auto">
+      
+      <!-- HEADER -->
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center font-bold text-sm">
+            💳
+          </div>
+          <div>
+            <h3 class="font-bold text-base text-slate-900">Thanh Toán Đơn Hàng</h3>
+            <p class="text-xs text-slate-500" id="checkout-pkg-name">Gói đang chọn: ...</p>
+          </div>
+        </div>
+
+        <!-- COUNTDOWN TIMER BADGE -->
+        <div class="flex items-center space-x-2">
+          <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1.5 animate-ping"></span>
+            Đang chờ thanh toán: <span id="countdown-timer" class="font-mono ml-1 font-bold">10:00</span>
+          </span>
+          <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none pl-2">&times;</button>
+        </div>
+      </div>
+
+      <!-- LIVE POLLING STATUS BANNER -->
+      <div class="bg-slate-50 border border-slate-200/80 rounded-xl px-4 py-2.5 flex items-center justify-between text-xs text-slate-600">
+        <div class="flex items-center space-x-2">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span class="font-medium">Hệ thống đang tự động lắng nghe giao dịch MB Bank...</span>
+        </div>
+        <span class="text-[11px] text-slate-400 hidden sm:inline">Kích hoạt tự động</span>
+      </div>
+
+      <!-- PAYMENT DETAILS (2 COLS) -->
+      <div class="grid grid-cols-1 sm:grid-cols-12 gap-5 items-center">
+        <!-- QR CODE PANE (5 COLS) -->
+        <div class="sm:col-span-5 flex flex-col items-center justify-center p-3 bg-slate-50/50 rounded-xl border border-slate-200">
+          <img id="checkout-qr-image" src="/api/qr-image" alt="Mã QR MB Bank" class="w-48 h-auto object-contain rounded-lg shadow-sm border border-white">
+          <div class="mt-2 text-center">
+            <span class="text-[10px] text-slate-500 block">Quét bằng ứng dụng ngân hàng bất kỳ</span>
+            <button onclick="toggleCardOriginal()" id="btn-toggle-original-card" class="text-[10px] text-brand-600 hover:underline mt-0.5">
+              Đổi sang ảnh thẻ gốc MB Bank
+            </button>
+          </div>
+        </div>
+
+        <!-- BANK INFO PANE (7 COLS) -->
+        <div class="sm:col-span-7 space-y-2.5 text-xs text-slate-700">
+          <div class="flex items-center justify-between py-1 border-b border-slate-100">
+            <span class="text-slate-400">Số tiền:</span>
+            <div class="flex items-center space-x-1.5">
+              <b class="text-base font-black text-slate-900" id="checkout-price">0đ</b>
+              <button onclick="copyRawText(document.getElementById('checkout-price').innerText.replace(/[^\d]/g,''), 'số tiền')" class="p-1 text-slate-400 hover:text-slate-700" title="Sao chép số tiền">📋</button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between py-1 border-b border-slate-100">
+            <span class="text-slate-400">Ngân hàng:</span>
+            <b class="text-slate-900">MB Bank (Quân Đội)</b>
+          </div>
+
+          <div class="flex items-center justify-between py-1 border-b border-slate-100">
+            <span class="text-slate-400">Số tài khoản:</span>
+            <div class="flex items-center space-x-1.5">
+              <b class="font-mono text-sm text-slate-900 tracking-wider">0666626032004</b>
+              <button onclick="copyRawText('0666626032004', 'số tài khoản')" class="p-1 text-slate-400 hover:text-slate-700" title="Sao chép số tài khoản">📋</button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between py-1 border-b border-slate-100">
+            <span class="text-slate-400">Chủ tài khoản:</span>
+            <b class="text-slate-900 uppercase">LE CONG DOAN</b>
+          </div>
+
+          <div class="py-1">
+            <div class="flex items-center justify-between">
+              <span class="text-slate-400 font-medium">Nội dung chuyển khoản:</span>
+              <button onclick="copyRawText(document.getElementById('checkout-transfer-code').innerText.trim(), 'nội dung chuyển khoản')" class="text-brand-600 hover:underline text-[11px] font-medium">Sao chép</button>
+            </div>
+            <div id="checkout-transfer-code" class="mt-1 font-mono font-bold text-xs bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-lg text-slate-900 block select-all">
+              HMZ 1 PAYG_40K
+            </div>
+            <span class="text-[10px] text-amber-600 mt-1 block">⚠️ Vui lòng giữ nguyên nội dung chuyển khoản để hệ thống tự động cộng từ.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+        <button onclick="backToPricing()" class="px-3.5 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-100 transition-colors">
+          &larr; Chọn gói khác
+        </button>
+
+        <button onclick="confirmPaymentAction()" id="btn-confirm-payment" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-all flex items-center space-x-2">
+          <svg id="spinner-confirm-pay" class="hidden animate-spin w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span id="btn-confirm-pay-text">✓ Tôi đã chuyển khoản thành công</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= MODAL: POP-UP THANH TOÁN THÀNH CÔNG ================= -->
+  <div id="success-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white border border-slate-200 p-6 sm:p-8 rounded-3xl max-w-md w-full space-y-5 shadow-2xl text-center my-auto">
+      
+      <!-- SUCCESS ICON -->
+      <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto text-3xl font-black shadow-sm">
+        ✓
+      </div>
+
+      <div>
+        <h3 class="text-xl font-extrabold text-slate-900">Thanh Toán Thành Công!</h3>
+        <p class="text-xs text-slate-500 mt-1">Cảm ơn bạn! Gói dịch vụ đã được kích hoạt thành công trên tài khoản của bạn.</p>
+      </div>
+
+      <!-- RECEIPT SUMMARY -->
+      <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs space-y-2.5 text-left">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-200/80">
+          <span class="text-slate-500">Gói đã kích hoạt:</span>
+          <b class="text-slate-900 font-semibold" id="success-pkg-name">Gói Nạp Lẻ (40.000 từ)</b>
+        </div>
+        <div class="flex items-center justify-between pb-2 border-b border-slate-200/80">
+          <span class="text-slate-500">Số từ cộng thêm:</span>
+          <b class="text-emerald-600 font-black text-sm" id="success-words-added">+40.000 từ</b>
+        </div>
+        <div class="flex items-center justify-between pb-2 border-b border-slate-200/80">
+          <span class="text-slate-500">Tổng số dư mới:</span>
+          <b class="text-slate-900 font-black text-sm" id="success-new-balance">45.000 từ</b>
+        </div>
+        <div class="flex items-center justify-between pb-2 border-b border-slate-200/80">
+          <span class="text-slate-500">Số tiền thanh toán:</span>
+          <b class="text-slate-900" id="success-price-paid">49.000đ</b>
+        </div>
+        <div class="flex items-center justify-between text-[11px]">
+          <span class="text-slate-400">Mã giao dịch:</span>
+          <span class="font-mono text-slate-600 font-medium" id="success-tx-code">MB-9823412</span>
+        </div>
+      </div>
+
+      <!-- ACTION BUTTON -->
+      <div class="pt-2">
+        <button onclick="closeSuccessModal()" class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center space-x-2">
+          <span>Bắt đầu sử dụng ngay</span>
+          <span>&rarr;</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-14 right-6 z-50 transform translate-y-10 opacity-0 transition-all duration-200 px-4 py-2.5 rounded-lg shadow-lg text-xs font-medium border border-slate-200 bg-white text-slate-800 flex items-center space-x-2"></div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    let currentMode = 'social_mkt';
+    let currentUser = null;
+    let selectedPackageId = null;
+    
+    const SAMPLES = {
+      social: `Trong kỷ nguyên số hiện nay, marketing đóng vai trò vô cùng quan trọng đối với sự thành công của doanh nghiệp. Không thể phủ nhận rằng nếu không có một chiến lược rõ ràng, bạn sẽ vô hình trung đánh mất đi bức tranh toàn cảnh và chìa khóa vàng để tiếp cận khách hàng. Hãy cùng chúng tôi khám phá những giải pháp tuyệt vời ngay hôm nay nhé! Chúc các bạn thành công!`,
+      academic: `Trong bối cảnh thời đại 4.0 phát triển như vũ bão, quản trị nhân lực đóng vai trò then chốt không thể thiếu trong sự trường tồn của tổ chức. Như chúng ta đã biết, việc áp dụng công nghệ tạo nên bước đệm vững chắc và mang lại những giá trị vượt trội. Tóm lại, việc tối ưu hóa nhân sự là một phần không thể tách rời của mọi doanh nghiệp hiện đại.`
+    };
+
+    // USER & AUTH FUNCTIONS
+    async function checkAuth() {
+      try {
+        const res = await fetch('/api/user/me');
+        const data = await res.json();
+        if (data.authenticated && data.user) {
+          currentUser = data.user;
+          renderUserUI(data.user);
+        } else {
+          currentUser = null;
+          renderGuestUI();
+        }
+      } catch (err) {
+        renderGuestUI();
+      }
+    }
+
+    function renderUserUI(user) {
+      document.getElementById('auth-guest').classList.add('hidden');
+      document.getElementById('auth-logged-in').classList.remove('hidden');
+      document.getElementById('nav-words-balance').innerText = user.words_balance.toLocaleString('vi-VN');
+      document.getElementById('user-name').innerText = user.name || user.email.split('@')[0];
+      document.getElementById('user-avatar').innerText = (user.name || user.email).charAt(0).toUpperCase();
+    }
+
+    function renderGuestUI() {
+      document.getElementById('auth-guest').classList.remove('hidden');
+      document.getElementById('auth-logged-in').classList.add('hidden');
+    }
+
+    function openLoginModal() {
+      document.getElementById('login-modal').classList.remove('hidden');
+    }
+
+    function closeLoginModal() {
+      document.getElementById('login-modal').classList.add('hidden');
+    }
+
+    async function submitGoogleLogin() {
+      const email = document.getElementById('login-email').value.trim();
+      const name = document.getElementById('login-name').value.trim();
+      if (!email) {
+        showToast('Vui lòng nhập địa chỉ email Google!', 'warning');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/auth/google-login', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ email: email, name: name })
+        });
+        const data = await res.json();
+        if (data.success && data.user) {
+          currentUser = data.user;
+          renderUserUI(data.user);
+          closeLoginModal();
+          showToast(`Đăng nhập thành công! Bạn nhận được 5.000 từ miễn phí.`, 'success');
+        } else {
+          showToast(data.error || 'Đăng nhập không thành công', 'error');
+        }
+      } catch (err) {
+        showToast('Lỗi kết nối: ' + err.message, 'error');
+      }
+    }
+
+    async function logout() {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      currentUser = null;
+      renderGuestUI();
+      showToast('Đã đăng xuất tài khoản.', 'info');
+    }
+
+    // PRICING & PAYMENT LOGIC
+    let countdownInterval = null;
+    let currentSelectedPkgName = '';
+    let currentSelectedPrice = 0;
+    let showingOriginalCard = false;
+
+    function openPricingModal() {
+      document.getElementById('pricing-modal').classList.remove('hidden');
+    }
+
+    function closePricingModal() {
+      document.getElementById('pricing-modal').classList.add('hidden');
+    }
+
+    function closeCheckoutModal() {
+      document.getElementById('checkout-modal').classList.add('hidden');
+      stopCountdownTimer();
+    }
+
+    function backToPricing() {
+      closeCheckoutModal();
+      openPricingModal();
+    }
+
+    function closeSuccessModal() {
+      document.getElementById('success-modal').classList.add('hidden');
+    }
+
+    function selectPackage(pkgId, pkgName, price) {
+      if (!currentUser) {
+        closePricingModal();
+        openLoginModal();
+        showToast('Vui lòng đăng nhập trước khi mua gói!', 'warning');
+        return;
+      }
+
+      selectedPackageId = pkgId;
+      currentSelectedPkgName = pkgName;
+      currentSelectedPrice = price;
+
+      // Close pricing modal and open dedicated checkout modal
+      closePricingModal();
+      document.getElementById('checkout-modal').classList.remove('hidden');
+
+      // Populate checkout details
+      document.getElementById('checkout-pkg-name').innerText = `Gói đang chọn: ${pkgName}`;
+      document.getElementById('checkout-price').innerText = price.toLocaleString('vi-VN') + 'đ';
+      
+      const code = `HMZ ${currentUser.id} ${pkgId.toUpperCase()}`;
+      document.getElementById('checkout-transfer-code').innerText = code;
+
+      // Generate VietQR for MB Bank, STK: 0666626032004, Name: LE CONG DOAN
+      const qrUrl = `https://api.vietqr.io/image/970422-0666626032004-compact2.jpg?amount=${price}&addInfo=${encodeURIComponent(code)}&accountName=LE%20CONG%20DOAN`;
+      const qrImg = document.getElementById('checkout-qr-image');
+      showingOriginalCard = false;
+      qrImg.src = qrUrl;
+      qrImg.onerror = () => { qrImg.src = '/api/qr-image'; };
+      document.getElementById('btn-toggle-original-card').innerText = 'Đổi sang ảnh thẻ gốc MB Bank';
+
+      // Start 10-minute countdown timer
+      startCountdownTimer(600);
+      showToast('Đang chờ thanh toán đơn hàng...', 'info');
+    }
+
+    function toggleCardOriginal() {
+      const qrImg = document.getElementById('checkout-qr-image');
+      const toggleBtn = document.getElementById('btn-toggle-original-card');
+      if (!showingOriginalCard) {
+        qrImg.src = '/api/qr-image';
+        toggleBtn.innerText = 'Đổi sang mã VietQR tự động';
+        showingOriginalCard = true;
+      } else {
+        const code = `HMZ ${currentUser.id} ${selectedPackageId.toUpperCase()}`;
+        qrImg.src = `https://api.vietqr.io/image/970422-0666626032004-compact2.jpg?amount=${currentSelectedPrice}&addInfo=${encodeURIComponent(code)}&accountName=LE%20CONG%20DOAN`;
+        toggleBtn.innerText = 'Đổi sang ảnh thẻ gốc MB Bank';
+        showingOriginalCard = false;
+      }
+    }
+
+    function startCountdownTimer(seconds) {
+      stopCountdownTimer();
+      let remaining = seconds;
+      const timerEl = document.getElementById('countdown-timer');
+      
+      function updateDisplay() {
+        const m = Math.floor(remaining / 60).toString().padStart(2, '0');
+        const s = (remaining % 60).toString().padStart(2, '0');
+        timerEl.innerText = `${m}:${s}`;
+      }
+      updateDisplay();
+
+      countdownInterval = setInterval(() => {
+        remaining--;
+        if (remaining <= 0) {
+          stopCountdownTimer();
+          timerEl.innerText = 'Hết hạn';
+          showToast('Đơn thanh toán đã hết hạn, vui lòng tạo lại.', 'warning');
+        } else {
+          updateDisplay();
+        }
+      }, 1000);
+    }
+
+    function stopCountdownTimer() {
+      if (countdownInterval) {
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+      }
+    }
+
+    function copyRawText(text, label) {
+      if (!text) return;
+      navigator.clipboard.writeText(text);
+      showToast(`Đã sao chép ${label}!`, 'success');
+    }
+
+    async function confirmPaymentAction() {
+      if (!selectedPackageId) return;
+
+      const btn = document.getElementById('btn-confirm-payment');
+      const btnText = document.getElementById('btn-confirm-pay-text');
+      const spinner = document.getElementById('spinner-confirm-pay');
+      btn.disabled = true;
+      spinner.classList.remove('hidden');
+      btnText.innerText = 'Đang kiểm tra giao dịch...';
+
+      try {
+        const res = await fetch('/api/user/purchase-package', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ package_id: selectedPackageId })
+        });
+        const data = await res.json();
+        if (data.success && data.user) {
+          currentUser = data.user;
+          renderUserUI(data.user);
+          closeCheckoutModal();
+
+          // Map words added
+          const wordsMap = {
+            'payg_40k': 40000, 'payg_20k': 40000,
+            'starter': 90000, 'pro': 300000, 'annual': 1000000
+          };
+          const wordsAdded = wordsMap[selectedPackageId] || 40000;
+
+          // Populate and show celebration success modal
+          document.getElementById('success-pkg-name').innerText = currentSelectedPkgName;
+          document.getElementById('success-words-added').innerText = `+${wordsAdded.toLocaleString('vi-VN')} từ`;
+          document.getElementById('success-new-balance').innerText = `${data.user.words_balance.toLocaleString('vi-VN')} từ`;
+          document.getElementById('success-price-paid').innerText = `${currentSelectedPrice.toLocaleString('vi-VN')}đ`;
+          document.getElementById('success-tx-code').innerText = `MB-${Date.now().toString().slice(-7)}`;
+          
+          document.getElementById('success-modal').classList.remove('hidden');
+          showToast('Thanh toán thành công! Gói cước đã được kích hoạt.', 'success');
+        } else {
+          showToast(data.error || 'Có lỗi xảy ra', 'error');
+        }
+      } catch (err) {
+        showToast('Lỗi: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        spinner.classList.add('hidden');
+        btnText.innerText = '✓ Tôi đã chuyển khoản thành công';
+      }
+    }
+
+    // MODE SELECTION
+    function selectMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll('.mode-tab').forEach(btn => {
+        btn.classList.remove('bg-white', 'text-slate-900', 'shadow-sm', 'font-semibold');
+        btn.classList.add('text-slate-600', 'font-medium');
+      });
+
+      const activeBtn = mode === 'social_mkt' ? document.getElementById('tab-social') :
+                        mode === 'academic' ? document.getElementById('tab-academic') :
+                        document.getElementById('tab-seo');
+      
+      if (activeBtn) {
+        activeBtn.classList.remove('text-slate-600', 'font-medium');
+        activeBtn.classList.add('bg-white', 'text-slate-900', 'shadow-sm', 'font-semibold');
+      }
+    }
+
+    function loadSample(type) {
+      document.getElementById('input-text').value = SAMPLES[type] || '';
+      updateCounts();
+      runAudit();
+    }
+
+    function clearAll() {
+      document.getElementById('input-text').value = '';
+      document.getElementById('output-text').value = '';
+      document.getElementById('output-text').classList.add('hidden');
+      document.getElementById('output-placeholder').classList.remove('hidden');
+      updateCounts();
+      resetAuditDisplay();
+    }
+
+    function updateCounts() {
+      const val = document.getElementById('input-text').value;
+      document.getElementById('char-count').innerText = val.length + ' ký tự';
+      const words = val.trim() ? val.trim().split(/\s+/).length : 0;
+      document.getElementById('word-count').innerText = words + ' từ';
+    }
+
+    document.getElementById('input-text').addEventListener('input', updateCounts);
+
+    async function pasteFromClipboard() {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          document.getElementById('input-text').value = text;
+          updateCounts();
+          runAudit();
+          showToast('Đã dán nội dung từ bộ nhớ tạm.', 'info');
+        }
+      } catch (err) {
+        showToast('Không thể đọc bộ nhớ tạm. Hãy dùng phím Ctrl + V.', 'warning');
+      }
+    }
+
+    function resetAuditDisplay() {
+      document.getElementById('status-ai-score').innerText = '--%';
+      document.getElementById('status-ai-badge').innerText = 'Chưa kiểm tra';
+      document.getElementById('status-ai-badge').className = 'px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-600';
+      document.getElementById('status-burstiness').innerText = '--/100';
+      document.getElementById('stat-sentences').innerText = '0';
+      document.getElementById('stat-avg-words').innerText = '0';
+      document.getElementById('cliche-counter').innerText = '0 cụm từ';
+      document.getElementById('cliche-tags-list').innerHTML = '';
+      document.getElementById('btn-toggle-cliches').classList.add('hidden');
+      document.getElementById('cliche-drawer').classList.add('hidden');
+    }
+
+    // AUDIT LOGIC (ALWAYS FREE)
+    async function runAudit() {
+      const text = document.getElementById('input-text').value.trim();
+      if (!text) {
+        showToast('Vui lòng nhập nội dung cần kiểm tra.', 'warning');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/humanizer/audit', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ text: text })
+        });
+        const data = await res.json();
+        renderAudit(data);
+      } catch (err) {
+        showToast('Lỗi khi kiểm tra văn bản: ' + err.message, 'error');
+      }
+    }
+
+    function renderAudit(data) {
+      const score = data.ai_score;
+      document.getElementById('status-ai-score').innerText = score + '%';
+      
+      const badge = document.getElementById('status-ai-badge');
+      if (score >= 70) {
+        badge.innerText = 'Nguy cơ cao (Mùi AI)';
+        badge.className = 'px-2 py-0.5 rounded text-[11px] font-medium bg-rose-50 text-rose-700 border border-rose-200';
+      } else if (score >= 40) {
+        badge.innerText = 'Cần biên tập lại';
+        badge.className = 'px-2 py-0.5 rounded text-[11px] font-medium bg-amber-50 text-amber-700 border border-amber-200';
+      } else {
+        badge.innerText = 'Chuẩn người viết';
+        badge.className = 'px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200';
+      }
+
+      const burst = data.burstiness_score || 0;
+      document.getElementById('status-burstiness').innerText = burst + '/100';
+
+      if (data.sentence_stats) {
+        document.getElementById('stat-sentences').innerText = data.sentence_stats.total_sentences || 0;
+        document.getElementById('stat-avg-words').innerText = data.sentence_stats.avg_words_per_sentence || 0;
+      }
+
+      const list = document.getElementById('cliche-tags-list');
+      const toggleBtn = document.getElementById('btn-toggle-cliches');
+      list.innerHTML = '';
+      if (data.cliches_found && data.cliches_found.length > 0) {
+        document.getElementById('cliche-counter').innerText = data.total_cliches + ' cụm từ';
+        toggleBtn.classList.remove('hidden');
+        data.cliches_found.forEach(c => {
+          const span = document.createElement('span');
+          span.className = 'cliche-tag';
+          span.innerText = `"${c.phrase}" (${c.count}x)`;
+          list.appendChild(span);
+        });
+      } else {
+        document.getElementById('cliche-counter').innerText = '0 cụm từ';
+        toggleBtn.classList.add('hidden');
+        document.getElementById('cliche-drawer').classList.add('hidden');
+      }
+    }
+
+    function toggleClicheDrawer() {
+      const drawer = document.getElementById('cliche-drawer');
+      drawer.classList.toggle('hidden');
+    }
+
+    // HUMANIZE EXECUTION (REQUIRES AUTH & DEDUCTS WORDS)
+    async function runHumanize() {
+      const text = document.getElementById('input-text').value.trim();
+      if (!text) {
+        showToast('Vui lòng nhập nội dung cần chuẩn hóa.', 'warning');
+        return;
+      }
+
+      // Check if user is logged in
+      if (!currentUser) {
+        openLoginModal();
+        showToast('Vui lòng đăng nhập để nhận 5.000 từ miễn phí và sử dụng!', 'warning');
+        return;
+      }
+
+      const intensity = document.getElementById('select-intensity').value;
+      const customTone = document.getElementById('input-custom-tone').value.trim();
+
+      const btn = document.getElementById('btn-humanize');
+      const btnText = document.getElementById('btn-humanize-text');
+      const spinner = document.getElementById('spinner-humanize');
+      btn.disabled = true;
+      spinner.classList.remove('hidden');
+      btnText.innerText = 'Đang xử lý...';
+
+      try {
+        const res = await fetch('/api/humanizer/process', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            text: text,
+            mode: currentMode,
+            intensity: intensity,
+            custom_tone: customTone
+          })
+        });
+
+        const data = await res.json();
+        if (!data.success) {
+          if (data.need_login) {
+            openLoginModal();
+          } else if (data.need_upgrade) {
+            openPricingModal();
+          }
+          showToast(data.error || 'Có lỗi xảy ra', 'error');
+          return;
+        }
+
+        // Display Output
+        document.getElementById('output-placeholder').classList.add('hidden');
+        const outputArea = document.getElementById('output-text');
+        outputArea.classList.remove('hidden');
+        outputArea.value = data.humanized_text;
+
+        const outWords = data.humanized_text.trim().split(/\s+/).length;
+        document.getElementById('output-word-count').innerText = outWords + ' từ';
+
+        // Update word balance
+        if (data.user_words_balance !== undefined) {
+          currentUser.words_balance = data.user_words_balance;
+          document.getElementById('nav-words-balance').innerText = data.user_words_balance.toLocaleString('vi-VN');
+        }
+
+        // Render After Audit
+        if (data.audit_after) {
+          renderAudit(data.audit_after);
+        }
+
+        showToast(`Đã chuẩn hóa bài viết! (-${data.words_deducted} từ)`, 'success');
+      } catch (err) {
+        showToast('Lỗi: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        spinner.classList.add('hidden');
+        btnText.innerText = 'Chuẩn hóa nội dung';
+      }
+    }
+
+    function copyOutput() {
+      const text = document.getElementById('output-text').value;
+      if (!text) {
+        showToast('Chưa có nội dung để sao chép.', 'warning');
+        return;
+      }
+      navigator.clipboard.writeText(text);
+      const btnText = document.getElementById('copy-btn-text');
+      btnText.innerText = 'Đã chép!';
+      setTimeout(() => { btnText.innerText = 'Sao chép'; }, 2000);
+      showToast('Đã sao chép vào bộ nhớ tạm.', 'success');
+    }
+
+    function downloadOutput() {
+      const text = document.getElementById('output-text').value;
+      if (!text) {
+        showToast('Chưa có nội dung để tải.', 'warning');
+        return;
+      }
+      const blob = new Blob([text], {type: 'text/plain;charset=utf-8'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `van-ban-chuan-hoa-${Date.now()}.txt`;
+      a.click();
+      showToast('Đang tải file về máy...', 'info');
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {});
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    function showToast(msg, type = 'info') {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      
+      let borderClass = 'border-slate-200 text-slate-800';
+      if (type === 'success') borderClass = 'border-emerald-300 text-emerald-800 bg-emerald-50';
+      else if (type === 'warning') borderClass = 'border-amber-300 text-amber-800 bg-amber-50';
+      else if (type === 'error') borderClass = 'border-rose-300 text-rose-800 bg-rose-50';
+
+      toast.className = `fixed bottom-14 right-6 z-50 transform transition-all duration-200 px-4 py-2.5 rounded-lg shadow-md text-xs font-medium border ${borderClass} translate-y-0 opacity-100`;
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-10', 'opacity-0');
+      }, 3000);
+    }
+
+    // Init on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      checkAuth();
+    });
+  </script>
+</body>
+</html>

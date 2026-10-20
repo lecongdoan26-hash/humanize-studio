@@ -1,0 +1,12 @@
+services:
+  klaro-ai:
+    build: .
+    container_name: klaro-marketing-os
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./.env:/app/.env
+    environment:
+      - PYTHONUNBUFFERED=1
