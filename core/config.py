@@ -18,7 +18,8 @@ load_dotenv(ENV_FILE)
 
 # Default Settings
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-DEFAULT_MODEL = "gemini-2.5-flash"
+DEFAULT_MODEL = "gemini-flash-latest"
+FALLBACK_MODELS = ["gemini-flash-latest", "gemini-3.8-flash", "gemini-3.5-flash", "gemini-3.7-flash"]
 
 def get_env_setting(key: str, default: str = "") -> str:
     return os.getenv(key, default)

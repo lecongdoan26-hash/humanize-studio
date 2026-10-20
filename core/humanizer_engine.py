@@ -6,7 +6,7 @@ Tối ưu hóa chuyên sâu cho ngữ cảnh Tiếng Việt.
 import re
 import math
 from typing import Dict, Any, List, Optional
-from core.config import get_env_setting, DEFAULT_MODEL
+from core.config import get_env_setting, DEFAULT_MODEL, FALLBACK_MODELS
 from core.database import get_settings, log_activity
 
 # Danh mục các sáo ngữ đặc trưng của AI tiếng Việt (AI Clichés)
@@ -242,29 +242,41 @@ Trả về văn bản đã chuẩn hóa hoàn chỉnh bằng Tiếng Việt.
 Không thêm lời giải thích mào đầu (như "Dưới đây là bài viết..."), không để trong khối code markdown backtick, chỉ trả về nội dung hoàn thiện nhất.
 """
 
-    try:
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt,
-        )
-        humanized_text = response.text.strip()
-        
-        # Chẩn đoán lại bài viết sau khi chuẩn hóa để so sánh
-        audit_before = audit_vietnamese_ai_text(text)
-        audit_after = audit_vietnamese_ai_text(humanized_text)
-        
-        return {
-            "success": True,
-            "original_text": text,
-            "humanized_text": humanized_text,
-            "audit_before": audit_before,
-            "audit_after": audit_after,
-            "mode": mode,
-            "intensity": intensity
-        }
-    except Exception as e:
-        log_activity("HUMANIZER", f"Lỗi khi xử lý bằng Gemini: {e}", level="ERROR")
+    candidate_models = [DEFAULT_MODEL] + [m for m in FALLBACK_MODELS if m != DEFAULT_MODEL]
+    humanized_text = ""
+    last_error = None
+
+    for target_model in candidate_models:
+        try:
+            response = client.models.generate_content(
+                model=target_model,
+                contents=prompt,
+            )
+            if response and response.text:
+                humanized_text = response.text.strip()
+                break
+        except Exception as err:
+            last_error = err
+            log_activity("HUMANIZER", f"Thử model {target_model} thất bại ({err}), chuyển sang model tiếp theo.", level="WARNING")
+            continue
+
+    if not humanized_text:
+        log_activity("HUMANIZER", f"Tất cả các model Gemini đều thất bại: {last_error}", level="ERROR")
         return {
             "success": False,
-            "error": f"Lỗi xử lý AI: {str(e)}"
+            "error": f"Lỗi xử lý AI: {str(last_error)}"
         }
+
+    # Chẩn đoán lại bài viết sau khi chuẩn hóa để so sánh
+    audit_before = audit_vietnamese_ai_text(text)
+    audit_after = audit_vietnamese_ai_text(humanized_text)
+    
+    return {
+        "success": True,
+        "original_text": text,
+        "humanized_text": humanized_text,
+        "audit_before": audit_before,
+        "audit_after": audit_after,
+        "mode": mode,
+        "intensity": intensity
+    }
